@@ -51,7 +51,6 @@ vim.o.listchars = 'tab:» ,space:·'
 -- don't display border
 vim.o.fillchars = 'vert:│,horiz:─'
 
-
 -- auto read file
 vim.o.autoread = true
 
@@ -64,6 +63,10 @@ autocmd('FileType', {
   pattern = 'help',
   command = 'wincmd L',
 })
+
+-- use Q rather than q to start record macro
+keymap('n', 'Q', 'q')
+keymap('n', 'q', '<nop>')
 
 -- diagnostic signs
 vim.fn.sign_define('DiagnosticSignError', { text = '', texthl = 'DiagnosticSignError' })
