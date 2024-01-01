@@ -81,8 +81,8 @@ file_assoc('*.kvconfig', 'ini')
 -- common Emacs-like editor hotkeys
 -- copy
 noremap('n', '<C-c>', '"+yy')
-noremap('n', '<C-S-c>', '"+yy')
 noremap('v', '<C-c>', '"+y')
+noremap('n', '<C-S-c>', '"+yy')
 noremap('v', '<C-S-c>', '"+y')
 -- cut
 noremap('n', '<C-x>', 'dd')
@@ -91,8 +91,10 @@ noremap('v', '<C-x>', '"+d')
 noremap('n', '<C-v>', '"+p')
 noremap('n', '<C-S-v>', '"+p')
 -- go to line begin / end
-noremap_all('<C-a>', '^')
-noremap_all('<C-e>', '$')
+noremap({'n', 'v'}, '<C-a>', '^')
+noremap('i', '<C-a>', '<esc>^i')
+noremap({'n', 'v'}, '<C-e>', '$')
+noremap('i', '<C-e>', '<esc>$a')
 -- close buffer
 noremap_all('<C-w>', '<cmd>BufferClose<cr>')
 -- save
