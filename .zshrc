@@ -39,7 +39,6 @@ autoload -U zmv
 export EDITOR='vim'  # symlink to `nvim`
 export DIFFPROG='vimdiff'  # symlink to `nvim -d`
 export SUDO='sudo'
-export ARCHFLAGS='-arch x86_64'
 export SAVEHIST=9999999
 
 
