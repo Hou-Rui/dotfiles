@@ -96,11 +96,11 @@ makepkgclean() {
 }
 
 #### Editor shortcuts ####
-zshrc()        "$EDITOR" "$HOME/.zshrc"
-ohmyzsh()      "$EDITOR" "$ZSH"
-vimrc()        "$EDITOR" "$XDG_CONFIG_HOME/nvim/init.lua"
-omwcfg()       "$EDITOR" "$XDG_CONFIG_HOME/openmw/openmw.cfg"
-omwsettings()  "$EDITOR" "$XDG_CONFIG_HOME/openmw/settings.cfg"
+zshrc()        { "$EDITOR" "$HOME/.zshrc" }
+ohmyzsh()      { "$EDITOR" "$ZSH" }
+vimrc()        { "$EDITOR" "$XDG_CONFIG_HOME/nvim/init.lua" }
+omwcfg()       { "$EDITOR" "$XDG_CONFIG_HOME/openmw/openmw.cfg" }
+omwsettings()  { "$EDITOR" "$XDG_CONFIG_HOME/openmw/settings.cfg" }
 
 
 #### Locale shortcuts ####
