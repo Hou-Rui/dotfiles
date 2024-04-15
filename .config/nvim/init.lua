@@ -95,8 +95,8 @@ noremap({'n', 'v'}, '<C-a>', '^')
 noremap('i', '<C-a>', '<esc>^i')
 noremap({'n', 'v'}, '<C-e>', '$')
 noremap('i', '<C-e>', '<esc>$a')
--- close buffer
-noremap_all('<C-w>', '<cmd>BufferClose<cr>')
+-- delete word
+noremap({'n', 'v'}, '<C-w>', 'diw')
 -- save
 noremap_all('<C-s>', '<cmd>wa<cr>')
 -- quit
