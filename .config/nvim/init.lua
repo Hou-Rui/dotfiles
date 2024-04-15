@@ -138,12 +138,14 @@ lazy.setup(
     -- git integration
     {
       'lewis6991/gitsigns.nvim',
+      cond = not vim.g.vscode,
       config = true,
     },
     -- multi cursor
     {
       'mg979/vim-visual-multi',
       branch = 'master',
+      cond = not vim.g.vscode,
       init = function()
         vim.g.VM_theme = 'codedark'
         vim.g.VM_maps = {
@@ -151,6 +153,21 @@ lazy.setup(
           ['Find Subword Under'] = '<C-d>',
         }
         vim.g.VM_set_statusline = 0
+      end
+    },
+    -- multi cursor in vscode
+    {
+      'vscode-neovim/vscode-multi-cursor.nvim',
+      event = 'VeryLazy',
+      cond = not not vim.g.vscode,
+      opts = {},
+      config = function()
+        vim.keymap.set(
+          { "n", "x", "i" }, "<C-d>",
+          function()
+            require("vscode-multi-cursor").addSelectionToNextFindMatch()
+          end
+        )
       end
     },
     -- toggle comment
@@ -164,6 +181,7 @@ lazy.setup(
     -- sudo handling
     {
       'lambdalisue/suda.vim',
+      cond = not vim.g.vscode,
       init = function()
         if not vim.opt.diff:get() then
           vim.g.suda_smart_edit = true
@@ -175,6 +193,7 @@ lazy.setup(
       'nvim-tree/nvim-tree.lua',
       version = "*",
       lazy = false,
+      cond = not vim.g.vscode,
       dependencies = {
         'nvim-tree/nvim-web-devicons',
       },
@@ -188,11 +207,15 @@ lazy.setup(
       end,
     },
     -- editor config
-    "tpope/vim-sleuth",
+    {
+      "tpope/vim-sleuth",
+      cond = not vim.g.vscode,
+    },
     -- indentation guide
     {
       "lukas-reineke/indent-blankline.nvim",
       main = 'ibl',
+      cond = not vim.g.vscode,
       opts = {
         indent = { char = '│' },
       },
@@ -200,6 +223,7 @@ lazy.setup(
     -- tab line
     {
       'romgrk/barbar.nvim',
+      cond = not vim.g.vscode,
       opts = {
         animation = false,
         auto_hide = true,
@@ -208,6 +232,7 @@ lazy.setup(
     -- scroll bar
     {
       'petertriho/nvim-scrollbar',
+      cond = not vim.g.vscode,
       config = true,
     },
     -- tree sitter
@@ -215,6 +240,7 @@ lazy.setup(
       'nvim-treesitter/nvim-treesitter',
       build = ':TSUpdate',
       main = 'nvim-treesitter.configs',
+      cond = not vim.g.vscode,
       opts = {
         auto_install = true,
         highlight = { enable = true },
@@ -225,6 +251,7 @@ lazy.setup(
     {
       'nvim-lualine/lualine.nvim',
       dependencies = {'nvim-tree/nvim-web-devicons'},
+      cond = not vim.g.vscode,
       opts = {
         options = {
           component_separators = {left = '', right = ''},
@@ -235,6 +262,7 @@ lazy.setup(
     -- formatting
     {
       'vim-autoformat/vim-autoformat',
+      cond = not vim.g.vscode,
       config = function()
         noremap({'n', 'v'}, 'ff', ':Autoformat')
       end
@@ -243,6 +271,7 @@ lazy.setup(
     {
       'VonHeikemen/lsp-zero.nvim',
       branch = 'v3.x',
+      cond = not vim.g.vscode,
       dependencies = {
         'williamboman/mason.nvim',
         'neovim/nvim-lspconfig',
@@ -288,6 +317,13 @@ lazy.setup(
           }
         }
       end
+    },
+    -- display issues
+    {
+      'folke/trouble.nvim',
+      dependencies = { "nvim-tree/nvim-web-devicons" },
+      cond = not vim.g.vscode,
+      config = true,
     },
   }, -- end of plugin list
   { -- lazy.nvim options
