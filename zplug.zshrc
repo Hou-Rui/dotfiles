@@ -14,7 +14,6 @@ function has_command {
 }
 
 zplug "robbyrussell/oh-my-zsh", use:"lib/*.zsh", defer:0
-zplug "plugins/command-not-found", from:oh-my-zsh, defer:1
 zplug "plugins/dirhistory", from:oh-my-zsh, defer:1
 zplug "agkozak/zsh-z"
 zplug "le0me55i/zsh-extract"
@@ -24,7 +23,14 @@ zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-autosuggestions"
 zplug 'knu/zsh-manydots-magic', use:manydots-magic, defer:3
 zplug "romkatv/powerlevel10k", use:powerlevel10k.zsh-theme
-zplug "MichaelAquilina/zsh-auto-notify", if:"has_command notify-send"
+
+if [[ -z $SINGULARITY_CONTAINER ]]; then
+  zplug "plugins/command-not-found", from:oh-my-zsh, defer:1
+fi
+
+if has_command notify-send; then
+  zplug "MichaelAquilina/zsh-auto-notify"
+fi
 
 export PATH="$HOME/.wine/drive_c/windows:$PATH"
 export PATH="$HOME/.wine/drive_c/windows/system32:$PATH"
@@ -49,8 +55,6 @@ export HISTSIZE=50000
 export SAVEHIST=50000
 export COLORTERM=truecolor
 export DISABLE_UNTRACKED_FILES_DIRTY="true"
-export GROFF_NO_SGR=1
-export WINEDEBUG=-all
 
 ### aliases
 
@@ -59,11 +63,17 @@ if has_command eza; then
   alias l='eza --long --icons --all'
   alias tree='eza --tree'
 fi
+
 alias open='xdg-open'
 alias x='extract'
 alias cls='clear'
 alias src="source $HOME/.zshrc"
 alias help='run-help'
+
+if has_command nvim && ! has_command vim; then
+  alias vim='nvim'
+  alias vimdiff='nvim -d'
+fi
 
 ### Auto rehash executable completion
 
