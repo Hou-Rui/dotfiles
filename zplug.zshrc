@@ -30,6 +30,9 @@ fi
 
 if has_command notify-send; then
   zplug "MichaelAquilina/zsh-auto-notify"
+  export AUTO_NOTIFY_THRESHOLD=30
+  export AUTO_NOTIFY_ICON_SUCCESS='/usr/share/icons/breeze/status/64/dialog-positive.svg'
+  export AUTO_NOTIFY_ICON_FAILURE='/usr/share/icons/breeze/status/64/dialog-error.svg'
 fi
 
 export PATH="$HOME/.wine/drive_c/windows:$PATH"
@@ -38,10 +41,6 @@ export PATH="$HOME/.wine/drive_c/windows/system32:$PATH"
 if [[ "$TERM" == 'linux' ]]; then
     export TERM=linux-16color
 fi
-
-# if has_command notify-send; then
-#   zplug 'MichaelAquilina/zsh-auto-notify'
-# fi
 
 zplug load
 
@@ -82,12 +81,12 @@ zstyle ':completion:*:functions' ignored-patterns '_*'
 
 ### Speed up copy & paste
 
-pasteinit() {
+function pasteinit {
     OLD_SELF_INSERT="${${(s.:.)widgets[self-insert]}[2,3]}"
     zle -N self-insert url-quote-magic
 }
 
-pastefinish() {
+function pastefinish {
     zle -N self-insert "$OLD_SELF_INSERT"
 }
 

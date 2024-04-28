@@ -1,4 +1,3 @@
-#### Powerlevel10k init
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -6,11 +5,10 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-
 #### Oh-My-Zsh plugins ####
 plugins=(
     # builtin plugins
-    command-not-found colored-man-pages dirhistory fancy-ctrl-z fd extract z
+    command-not-found colored-man-pages dirhistory fancy-ctrl-z fd extract python z
     # custom plugins
     auto-notify  # https://github.com/MichaelAquilina/zsh-auto-notify
     zsh-autosuggestions  # https://github.com/zsh-users/zsh-autosuggestions
@@ -30,6 +28,7 @@ export ENABLE_CORRECTION='false'
 export PKGFILE_PROMPT_INSTALL_MISSING=1
 export GROFF_NO_SGR=1
 export CORRECT_IGNORE_FILE='.*'
+export PYTHON_AUTO_VRUN=true
 source "$ZSH/oh-my-zsh.sh"
 
 
@@ -43,10 +42,8 @@ export SAVEHIST=9999999
 
 
 #### Search Paths ####
-export PATH="$HOME/.cargo/bin:$PATH"
-export PATH="$HOME/.node_modules/bin:$PATH"
-export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
-export PATH="/opt/android-sdk/cmdline-tools/latest/bin:$PATH"
+# export PATH="$HOME/.local/bin:$PATH"
+# export PATH="$HOME/.node_modules/bin:$PATH"
 
 
 #### Self-used environment variables ####
@@ -71,7 +68,6 @@ alias bc='bc -l'
 alias ccat='bat'
 alias src='omz reload'
 alias mmv='noglob zmv -W'
-alias tldr='cht.sh'
 alias grep='rg'
 alias rrm='trash-put'
 
@@ -115,10 +111,16 @@ export AUTO_NOTIFY_IGNORE=(
     'zsh' 'bash'
     'man' 'more' 'less'
 )
+export AUTO_NOTIFY_ICON_SUCCESS='/usr/share/icons/breeze/status/64/dialog-positive.svg'
+export AUTO_NOTIFY_ICON_FAILURE='/usr/share/icons/breeze/status/64/dialog-error.svg'
 
 
 #### History ####
 hgrep() { history | rg "$*" }
+
+
+#### cht.sh ####
+tldr() { cht.sh "$*?style=rrt" }
 
 
 #### Auto rehash executable completion ####
@@ -164,8 +166,5 @@ if [[ "$TERM" == 'linux' ]]; then
     export TERM=linux-16color
 fi
 
-
-#### Powerlevel10k customization
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
