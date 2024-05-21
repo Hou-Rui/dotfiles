@@ -1,13 +1,21 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
+### XDG locations
+
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+
+
+### poerlevel10k instant prompt
+
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+PROMPT_SCRIPT="$XDG_CACHE_HOME/p10k-instant-prompt-${(%):-%n}.zsh"
+if [[ -r $PROMPT_SCRIPT ]]; then
+  source "$PROMPT_SCRIPT"
 fi
 
 
-### plugins
+### load plugins
 
 source ~/.zplug/init.zsh
 
@@ -38,11 +46,8 @@ if has_command notify-send; then
   export AUTO_NOTIFY_ICON_FAILURE='/usr/share/icons/breeze/status/64/dialog-error.svg'
 fi
 
-export PATH="$HOME/.wine/drive_c/windows:$PATH"
-export PATH="$HOME/.wine/drive_c/windows/system32:$PATH"
-
-if [[ "$TERM" == 'linux' ]]; then
-    export TERM=linux-16color
+if [[ "$TERM" == linux ]]; then
+  export TERM=linux-16color
 fi
 
 zplug load
@@ -58,11 +63,12 @@ export SAVEHIST=50000
 export COLORTERM=truecolor
 export DISABLE_UNTRACKED_FILES_DIRTY="true"
 export AUTOSWITCH_FILE="venv"
-export WORDCHARS='_-'
+export WORDCHARS='.-'
+
 
 ### aliases
 
-if has_command eza; then 
+if has_command eza; then
   alias ls='eza'
   alias l='eza --long --icons --all'
   alias tree='eza --tree'
@@ -79,33 +85,41 @@ if has_command nvim && ! has_command vim; then
   alias vimdiff='nvim -d'
 fi
 
-### Auto rehash executable completion
+
+### auto rehash executable completion
 
 zstyle ':completion:*' rehash true
 zstyle ':completion:*:functions' ignored-patterns '_*'
 
-### Speed up copy & paste
+
+### speed up copy & paste
 
 function pasteinit {
-    OLD_SELF_INSERT="${${(s.:.)widgets[self-insert]}[2,3]}"
-    zle -N self-insert url-quote-magic
+  OLD_SELF_INSERT="${${(s.:.)widgets[self-insert]}[2,3]}"
+  zle -N self-insert url-quote-magic
 }
 
 function pastefinish {
-    zle -N self-insert "$OLD_SELF_INSERT"
+  zle -N self-insert "$OLD_SELF_INSERT"
 }
 
 zstyle :bracketed-paste-magic paste-init pasteinit
 zstyle :bracketed-paste-magic paste-finish pastefinish
+
 
 ### functions
 
 function zshrc {
   "$EDITOR" "$HOME/.zshrc"
 }
+
 function vimrc {
-  "$EDITOR" "$HOME/.config/nvim/init.lua"
-} 
+  if has_command nvim; then
+    "$EDITOR" "$HOME/.config/nvim/init.lua"
+  else
+    "$EDITOR" "$HOME/.vimrc"
+  fi
+}
 
 function mkcd {
   if (( $# != 1 )); then
@@ -120,15 +134,15 @@ function hgrep {
     echo 'Usage: hrep <pattern>'
     return 1
   fi
-  history | grep "$*" -
+  history | grep -E "$*" -
 }
 
 function killregex {
-    local regex="$1"; shift
-    local args="$@"
-    for p in $(ps -A | grep "$regex" | awk '{print $1}'); do
-        kill $args $p
-    done
+  local regex="$1"; shift
+  local args="$@"
+  for p in $(ps -A | grep -E "$regex" | awk '{print $1}'); do
+    kill $args $p
+  done
 }
 
 function update {
@@ -156,5 +170,8 @@ function tldr {
   cht.sh "$*?style=rrt"
 }
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+
+### load powerlevel10k config
+
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
