@@ -1,9 +1,11 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+
 
 ### plugins
 
@@ -21,8 +23,9 @@ zplug "ael-code/zsh-colored-man-pages"
 zplug "zdharma-continuum/fast-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-autosuggestions"
+zplug "MichaelAquilina/zsh-autoswitch-virtualenv"
 zplug 'knu/zsh-manydots-magic', use:manydots-magic, defer:3
-zplug "romkatv/powerlevel10k", use:powerlevel10k.zsh-theme
+zplug "romkatv/powerlevel10k", as:theme, depth:1
 
 if [[ -z $SINGULARITY_CONTAINER ]]; then
   zplug "plugins/command-not-found", from:oh-my-zsh, defer:1
@@ -54,6 +57,8 @@ export HISTSIZE=50000
 export SAVEHIST=50000
 export COLORTERM=truecolor
 export DISABLE_UNTRACKED_FILES_DIRTY="true"
+export AUTOSWITCH_FILE="venv"
+export WORDCHARS='_-'
 
 ### aliases
 
