@@ -1,3 +1,10 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 #### Self-used environment variables ####
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
@@ -24,38 +31,19 @@ export GROFF_NO_SGR=1
 export CORRECT_IGNORE_FILE='.*'
 export PYTHON_AUTO_VRUN=true
 
-plugins=(
-  command-not-found colored-man-pages dirhistory
-  fancy-ctrl-z fd extract python z
-)
+plugins=(command-not-found dirhistory fancy-ctrl-z extract python z)
 
 function {
   local path plugin
   for path in "$ZSH/custom/plugins/"*; do
     plugin="$(/usr/bin/basename $path)"
-    [[ $plugin != example ]] && plugins+=("$plugin")
+    if [[ $plugin != example ]]; then
+      plugins+=("$plugin")
+    fi
   done
 }
 
 source "$ZSH/oh-my-zsh.sh"
-
-
-#### Environment config ####
-setopt no_nomatch
-autoload -U zmv
-autoload -Uz run-help
-unalias run-help  # by default run-help alias to man
-export EDITOR='nvim'
-export VISUAL='nvim'
-export DIFFPROG='nvim -d'
-export SUDO='sudo'
-export SAVEHIST=9999999
-export ZSHZ_DATA="$XDG_DATA_HOME/zsh-z/.z"
-compinit -d "$ZSH_COMPDUMP"
-
-if [[ "$TERM" == 'linux' ]]; then
-  export TERM=linux-16color  # use 16-color in TTY mode
-fi
 
 
 #### Helper functions ####
@@ -63,42 +51,30 @@ function has_command {
   command -v "$*" &> /dev/null
 }
 
-function makepkgclean {
-  if ! [[ -f PKGBUILD ]]; then
-    echo "PKGBUILD not detected."
-    return 1
+function add_path {
+  if ! [[ $PATH =~ .*"$*".* ]]; then
+    export PATH="$*:$PATH"
   fi
-  for file in *; do
-    [[ $file == PKGBUILD ]] && continue
-    echo "Removing $file..."
-    rm -rf "$file"
-  done
 }
 
-function killregex {
-  local regex="$1"; shift
-  local args="$@"
-  for p in $(ps -A | grep "$regex" | awk '{print $1}'); do
-    kill $args $p
-  done
-}
 
-function zshrc {
-  "$EDITOR" "$HOME/.zshrc"
-}
+#### Environment config ####
+setopt no_nomatch extended_glob
+autoload -Uz zmv run-help
+unalias run-help  # by default run-help alias to man
+export EDITOR='nvim'
+export DIFFPROG='nvim -d'
+export VISUAL="$EDITOR"
+export SUDO='sudo'
+export SAVEHIST=9999999
+export ZSHZ_DATA="$XDG_DATA_HOME/zsh-z/.z"
+export WORDCHARS='-'
 
-function vimrc {
-  case "$EDITOR" in
-    (nvim) "$EDITOR" "$XDG_CONFIG_HOME/nvim/init.lua";;
-    (vim)  "$EDITOR" "$HOME/.vimrc";;
-    (*)    echo "vim not detected."; return 1;;
-  esac
-}
+if [[ $TERM == linux ]]; then
+  export TERM=linux-16color  # use 16-color in TTY mode
+fi
 
-function tldr {
-  cht.sh "$*?style=rrt"
-} 
-
+add_path "$HOME/.local/bin"
 
 #### aliases ####
 alias cls='clear'
@@ -123,13 +99,8 @@ if has_command eza; then
   alias tree='exa --tree --icons'
 fi
 
-if has_command bat; then
-  alias ccat='bat'
-fi
-
 if has_command rg; then
   alias rg='noglob rg'
-  alias grep='rg'
   alias hgrep='history | noglob rg'
 else
   alias hgrep='history | noglob grep'
@@ -138,6 +109,71 @@ fi
 if has_command trash-put; then
   alias rrm='trash-put'
 fi
+
+if has_command go-task; then
+  alias task='go-task'
+fi
+
+if has_command batman; then
+  alias man='batman'
+fi
+
+#### utility functions ####
+
+function makepkgclean {
+  if ! [[ -f PKGBUILD ]]; then
+    echo "PKGBUILD not detected."
+    return 1
+  fi
+  for file in *; do
+    if [[ $file == PKGBUILD ]]; then
+      continue
+    fi
+    echo "Removing $file..."
+    rm -rf "$file"
+  done
+}
+
+function killregex {
+  local regex="$1"; shift
+  local args="$@"
+  for p in $(pgrep "$regex"); do
+    kill "$args[@]" "$p"
+  done
+}
+
+function zshrc {
+  "$EDITOR" "$HOME/.zshrc"
+}
+
+function vimrc {
+  case "$EDITOR" in
+    (nvim) "$EDITOR" "$XDG_CONFIG_HOME/nvim/init.lua";;
+    (vim)  "$EDITOR" "$HOME/.vimrc";;
+    (*)    echo "vim not detected."; return 1;;
+  esac
+}
+
+function tldr {
+  cht.sh "$*?style=rrt"
+}
+
+function wman {
+  local url="https://man.archlinux.org/man/$*.raw"
+  local tmpfile="$(mktemp)"
+  local resp="$(curl -sL -o "$tmpfile" -w "%{response_code}" "$url")"
+  local ret=0
+  if (( resp >= 400 )); then
+    echo "Failed to fetch online man page for $* (response code: $resp)"
+    ret=1
+  else
+    man -l "$tmpfile"
+    ret=$?
+  fi
+  rm "$tmpfile"
+  return $ret
+}
+
 
 #### Auto notification config ####
 export AUTO_NOTIFY_THRESHOLD=30
@@ -175,5 +211,8 @@ zstyle :bracketed-paste-magic paste-finish pastefinish
 #### Custom PowerLevel 10K settings ####
 function {
   local p10k_config="$HOME/.p10k.zsh"
-  [[ -f $p10k_config ]] && source "$p10k_config"
+  if [[ -f $p10k_config ]]; then
+    source "$p10k_config"
+  fi
 }
+
