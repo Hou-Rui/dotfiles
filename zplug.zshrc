@@ -1,3 +1,7 @@
+### non-interative mode
+
+[[ $- =~ .*i.* ]] || return
+
 ### XDG locations
 
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -8,11 +12,10 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 ### poerlevel10k instant prompt
 
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-PROMPT_SCRIPT="$XDG_CACHE_HOME/p10k-instant-prompt-${(%):-%n}.zsh"
-if [[ -r $PROMPT_SCRIPT ]]; then
-  source "$PROMPT_SCRIPT"
-fi
+function {
+  local PROMPT_SCRIPT="$XDG_CACHE_HOME/p10k-instant-prompt-${(%):-%n}.zsh"
+  [[ -r $PROMPT_SCRIPT ]] && source "$PROMPT_SCRIPT"
+}
 
 
 ### load plugins
@@ -27,11 +30,9 @@ zplug "robbyrussell/oh-my-zsh", use:"lib/*.zsh", defer:0
 zplug "plugins/dirhistory", from:oh-my-zsh, defer:1
 zplug "agkozak/zsh-z"
 zplug "le0me55i/zsh-extract"
-zplug "ael-code/zsh-colored-man-pages"
 zplug "zdharma-continuum/fast-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-autosuggestions"
-zplug "MichaelAquilina/zsh-autoswitch-virtualenv"
 zplug 'knu/zsh-manydots-magic', use:manydots-magic, defer:3
 zplug "romkatv/powerlevel10k", as:theme, depth:1
 
@@ -63,15 +64,25 @@ export SAVEHIST=50000
 export COLORTERM=truecolor
 export DISABLE_UNTRACKED_FILES_DIRTY="true"
 export AUTOSWITCH_FILE="venv"
-export WORDCHARS='.-'
+export GROFF_NO_SGR=1
+export WORDCHARS='-'
 
 
 ### aliases
 
 if has_command eza; then
   alias ls='eza'
-  alias l='eza --long --icons --all'
+  alias l='eza --long --icons --group --all'
   alias tree='eza --tree'
+fi
+
+if has_command fdfind; then
+  alias fd='fdfind'
+fi
+
+if has_command batcat; then
+  alias bat='batcat'
+  export MANPAGER='bat'
 fi
 
 alias open='xdg-open'
@@ -85,6 +96,9 @@ if has_command nvim && ! has_command vim; then
   alias vimdiff='nvim -d'
 fi
 
+if has_command batman; then
+  alias man=batman
+fi
 
 ### auto rehash executable completion
 
@@ -134,7 +148,11 @@ function hgrep {
     echo 'Usage: hrep <pattern>'
     return 1
   fi
-  history | grep -E "$*" -
+  if has_command rg; then
+    history | rg "$*"
+  else
+    history | grep -E "$*" -
+  fi
 }
 
 function killregex {
@@ -168,6 +186,37 @@ function repo {
 
 function tldr {
   cht.sh "$*?style=rrt"
+}
+
+function frg {
+  local result file linenumber
+  result=$(rg --ignore-case --color=always --line-number --no-heading "$@" |
+  fzf --ansi \
+      --color 'hl:-1:underline,hl+:-1:underline:reverse' \
+      --delimiter ':' \
+      --preview "bat --color=always {1} --highlight-line {2}" \
+      --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')
+  file=${result%%:*}
+  linenumber=$(echo "${result}" | cut -d: -f2)
+  if [[ -n "$file" ]]; then
+    $EDITOR +"${linenumber}" "$file"
+  fi
+}
+
+function wman {
+  local tmpfile="$(mktemp)"
+  local ret=0
+  local url="https://man.archlinux.org/man/$*.raw"
+  local respcode="$(curl -o "$tmpfile" -sL "$url" -w '%{response_code}')"
+  if (( respcode >= 400 )); then
+    echo "Failed to fetch man page for $* (response code: $respcode)"
+    ret=1
+  else
+    man -l "$tmpfile"
+    ret=$?
+  fi
+  rm "$tmpfile"
+  return "$ret"
 }
 
 
