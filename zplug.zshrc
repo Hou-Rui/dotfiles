@@ -8,7 +8,7 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-
+export ZSH_CUSTOM="$XDG_DATA_HOME/zshcustom"
 
 ### poerlevel10k instant prompt
 
@@ -23,7 +23,7 @@ function {
 source ~/.zplug/init.zsh
 
 function has_command {
-  command -v "$*" &> /dev/null
+  command -v $* &> /dev/null
 }
 
 zplug "robbyrussell/oh-my-zsh", use:"lib/*.zsh", defer:0
@@ -40,12 +40,20 @@ if [[ -z $SINGULARITY_CONTAINER ]]; then
   zplug "plugins/command-not-found", from:oh-my-zsh, defer:1
 fi
 
-if has_command notify-send; then
+if has_command awk notify-send; then
   zplug "MichaelAquilina/zsh-auto-notify"
   export AUTO_NOTIFY_THRESHOLD=30
   export AUTO_NOTIFY_ICON_SUCCESS='/usr/share/icons/breeze/status/64/dialog-positive.svg'
   export AUTO_NOTIFY_ICON_FAILURE='/usr/share/icons/breeze/status/64/dialog-error.svg'
 fi
+
+function {
+  [[ -d $ZSH_CUSTOM ]] || return
+  local plugin
+  for plugin in "$ZSH_CUSTOM/"*; do
+    zplug "$plugin", from:local
+  done
+}
 
 if [[ "$TERM" == linux ]]; then
   export TERM=linux-16color
@@ -161,12 +169,6 @@ function killregex {
   for p in $(ps -A | grep -E "$regex" | awk '{print $1}'); do
     kill $args $p
   done
-}
-
-function update {
-  yay
-  flatpak update
-  zplug update
 }
 
 function repo {
