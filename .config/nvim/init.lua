@@ -11,20 +11,24 @@ vim.opt.rtp:prepend(lazypath)
 
 -- utilities
 local autocmd = vim.api.nvim_create_autocmd
-local keymap = vim.keymap.set
-
-local function noremap(mode, lhs, rhs)
+local function keymap(mode, lhs, rhs, options)
   if type(lhs) == 'table' then
     for _, key in pairs(lhs) do
-      noremap(mode, key, rhs)
+      keymap(mode, key, rhs, options)
     end
     return
   end
-  keymap(mode, lhs, rhs, {noremap = true})
+  vim.keymap.set(mode, lhs, rhs, options)
 end
 
-local function noremap_all(lhs, rhs)
-  noremap({'n', 'i', 'v'}, lhs, rhs)
+local function noremap(mode, lhs, rhs, options)
+  local opts = options or {}
+  opts['remap'] = false
+  keymap(mode, lhs, rhs, opts)
+end
+
+local function noremap_all(lhs, rhs, options)
+  noremap({'n', 'i', 'v'}, lhs, rhs, options)
 end
 
 local function file_assoc(pattern, filetype)
@@ -76,8 +80,11 @@ autocmd('FileType', {
 })
 
 -- use Q rather than q to start record macro
-keymap('n', 'Q', 'q')
-keymap('n', 'q', '<nop>')
+noremap('n', 'Q', 'q')
+noremap('n', 'q', '<nop>')
+
+-- hide search highlights when press enter in command mode
+noremap('n', '<cr>', '<cmd>noh<cr><cr>', {silent = true})
 
 -- diagnostic signs
 vim.fn.sign_define('DiagnosticSignError', { text = '', texthl = 'DiagnosticSignError' })
@@ -250,7 +257,7 @@ lazy.setup(
       dependencies = {'nvim-tree/nvim-web-devicons'},
       opts = {
         options = {
-          theme = "onedark",
+          theme = "ayu",
           component_separators = {left = '', right = ''},
           section_separators = {left = '', right = ''},
         },
