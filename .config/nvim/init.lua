@@ -112,8 +112,8 @@ noremap('i', '<C-a>', '<esc>^i')
 noremap({'n', 'v'}, '<C-e>', '$')
 noremap('i', '<C-e>', '<esc>$a')
 -- delete word
-noremap({'n', 'v'}, {'<C-w>', '<C-h>', '<C-bs>'}, 'bdW')
-noremap('i', {'<C-w>', '<C-h>', '<C-bs>'}, '<esc>bdWa')
+noremap('n', {'<C-w>', '<C-h>', '<C-bs>'}, 'vB"_d')
+noremap('i', {'<C-h>', '<C-bs>'}, '<C-w>')
 -- save
 noremap_all('<C-s>', '<cmd>wa<cr>')
 -- quit
@@ -176,12 +176,13 @@ lazy.setup(
       'mg979/vim-visual-multi',
       branch = 'master',
       init = function()
-        vim.g.VM_theme = 'codedark'
+        vim.g.VM_mouse_mappings = 1
         vim.g.VM_maps = {
           ['Find Under'] = '<C-d>',
           ['Find Subword Under'] = '<C-d>',
         }
-        vim.g.VM_set_statusline = 0
+        vim.g.VM_set_statusline = 3 -- refresh
+        vim.g.VM_silent_exit = 1
       end
     },
     -- toggle comment
@@ -255,13 +256,36 @@ lazy.setup(
     {
       'nvim-lualine/lualine.nvim',
       dependencies = {'nvim-tree/nvim-web-devicons'},
-      opts = {
-        options = {
-          theme = "ayu",
-          component_separators = {left = '', right = ''},
-          section_separators = {left = '', right = ''},
-        },
-      }
+      config = function()
+        local function vm_mode(mode)
+          return vim.iter(string.gmatch(vim.fn['vm#themes#statusline'](), "%S+")):nth(2) or mode
+        end
+
+        local function vm_status()
+          return vim.fn['VMInfos']().status or ''
+        end
+
+        require('lualine').setup {
+          options = {
+            theme = "ayu",
+            component_separators = {left = '', right = ''},
+            section_separators = {left = '', right = ''},
+          },
+          sections = {
+            lualine_a = {{'mode', fmt = vm_mode}},
+            lualine_b = {vm_status, 'branch', 'diff', 'diagnostics'},
+          },
+        }
+
+        autocmd('CmdlineEnter', {
+          pattern = {'@'},
+          callback = function(ev)
+            if vim.b.visual_multi then
+              vim.defer_fn(function() vim.cmd('execute "redrawstatus"') end, 0)
+            end
+          end
+        })
+      end
     },
     -- formatting
     {
@@ -277,7 +301,7 @@ lazy.setup(
       cond = is_not_large_file,
       opts = {
         keymap = {
-          preset = "enter"
+          preset = "super-tab"
         },
         sources = {
           default = { 'path', 'buffer' }
