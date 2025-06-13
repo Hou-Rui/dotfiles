@@ -73,6 +73,11 @@ vim.o.autoread = true
 vim.o.pumblend = 8
 vim.o.winblend = 8
 
+-- use OSC-52 to copy text
+if not vim.g.loaded_clipboard_provider then
+  vim.g.clipboard = 'osc52'
+end
+
 -- open help on right side
 autocmd('FileType', {
   pattern = 'help',
@@ -83,7 +88,7 @@ autocmd('FileType', {
 noremap('n', 'Q', 'q')
 noremap('n', 'q', '<nop>')
 
--- hide search highlights when press enter in command mode
+-- hide search highlights when press enter in normal mode
 noremap('n', '<cr>', '<cmd>noh<cr><cr>', {silent = true})
 
 -- diagnostic signs
@@ -98,14 +103,14 @@ file_assoc('*.kvconfig', 'ini')
 
 -- common Emacs-like editor hotkeys
 -- copy
-noremap('n', {'<C-c>', '<C-S-c>'}, 'yy')
-noremap('v', {'<C-c>', '<C-S-c>'}, 'y')
+noremap('n', {'<C-c>', '<C-S-c>'}, '"+yy')
+noremap('v', {'<C-c>', '<C-S-c>'}, '"+y')
 -- cut
 noremap('n', '<C-x>', 'dd')
 noremap('v', '<C-x>', 'd')
 -- paste
-noremap('n', '<C-v>', 'p')
-noremap('n', '<C-S-v>', 'p')
+noremap('n', '<C-v>', '"+p')
+noremap('n', '<C-S-v>', '"+p')
 -- go to line begin / end
 noremap({'n', 'v'}, '<C-a>', '^')
 noremap('i', '<C-a>', '<esc>^i')
