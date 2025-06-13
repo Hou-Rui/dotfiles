@@ -98,22 +98,19 @@ file_assoc('*.kvconfig', 'ini')
 
 -- common Emacs-like editor hotkeys
 -- copy
-noremap('n', {'<C-c>', '<C-S-c>'}, '"+yy')
-noremap('v', {'<C-c>', '<C-S-c>'}, '"+y')
+noremap('n', {'<C-c>', '<C-S-c>'}, 'yy')
+noremap('v', {'<C-c>', '<C-S-c>'}, 'y')
 -- cut
 noremap('n', '<C-x>', 'dd')
-noremap('v', '<C-x>', '"+d')
+noremap('v', '<C-x>', 'd')
 -- paste
-noremap('n', '<C-v>', '"+p')
-noremap('n', '<C-S-v>', '"+p')
+noremap('n', '<C-v>', 'p')
+noremap('n', '<C-S-v>', 'p')
 -- go to line begin / end
 noremap({'n', 'v'}, '<C-a>', '^')
 noremap('i', '<C-a>', '<esc>^i')
 noremap({'n', 'v'}, '<C-e>', '$')
 noremap('i', '<C-e>', '<esc>$a')
--- delete word
-noremap('n', {'<C-w>', '<C-h>', '<C-bs>'}, 'vB"_d')
-noremap('i', {'<C-h>', '<C-bs>'}, '<C-w>')
 -- save
 noremap_all('<C-s>', '<cmd>wa<cr>')
 -- quit
@@ -173,16 +170,29 @@ lazy.setup(
     },
     -- multi cursor
     {
-      'mg979/vim-visual-multi',
-      branch = 'master',
-      init = function()
-        vim.g.VM_mouse_mappings = 1
-        vim.g.VM_maps = {
-          ['Find Under'] = '<C-d>',
-          ['Find Subword Under'] = '<C-d>',
-        }
-        vim.g.VM_set_statusline = 3 -- refresh
-        vim.g.VM_silent_exit = 1
+      "jake-stewart/multicursor.nvim",
+      branch = "1.0",
+      config = function()
+        local mc = require("multicursor-nvim")
+        mc.setup()
+        noremap({"n", "x"}, "<C-up>", function() mc.lineAddCursor(-1) end)
+        noremap({"n", "x"}, "<C-down>", function() mc.lineAddCursor(1) end)
+        noremap({"n", "x"}, "<C-d>", function() mc.matchAddCursor(1) end)
+        noremap({"n", "x"}, "<C-S-d>", function() mc.matchAddCursor(-1) end)
+
+        noremap("n", "<C-leftmouse>", mc.handleMouse)
+        noremap("n", "<C-leftdrag>", mc.handleMouseDrag)
+        noremap("n", "<C-leftrelease>", mc.handleMouseRelease)
+
+        mc.addKeymapLayer(function(layerSet)
+            layerSet("n", "<esc>", function()
+                if not mc.cursorsEnabled() then
+                    mc.enableCursors()
+                else
+                    mc.clearCursors()
+                end
+            end)
+        end)
       end
     },
     -- toggle comment
@@ -250,42 +260,20 @@ lazy.setup(
         highlight = { enable = true },
         indent = { enable = true },
         ignore_install = { 'help' },
+        ensure_installed = { 'lua', 'vim', 'vimdoc' },
       }
     },
     -- airline themes
     {
       'nvim-lualine/lualine.nvim',
       dependencies = {'nvim-tree/nvim-web-devicons'},
-      config = function()
-        local function vm_mode(mode)
-          return vim.iter(string.gmatch(vim.fn['vm#themes#statusline'](), "%S+")):nth(2) or mode
-        end
-
-        local function vm_status()
-          return vim.fn['VMInfos']().status or ''
-        end
-
-        require('lualine').setup {
-          options = {
-            theme = "ayu",
-            component_separators = {left = '', right = ''},
-            section_separators = {left = '', right = ''},
-          },
-          sections = {
-            lualine_a = {{'mode', fmt = vm_mode}},
-            lualine_b = {vm_status, 'branch', 'diff', 'diagnostics'},
-          },
-        }
-
-        autocmd('CmdlineEnter', {
-          pattern = {'@'},
-          callback = function(ev)
-            if vim.b.visual_multi then
-              vim.defer_fn(function() vim.cmd('execute "redrawstatus"') end, 0)
-            end
-          end
-        })
-      end
+      opts = {
+        options = {
+          theme = "ayu",
+          component_separators = {left = '', right = ''},
+          section_separators = {left = '', right = ''},
+        },
+      }
     },
     -- formatting
     {
@@ -294,21 +282,6 @@ lazy.setup(
         noremap({'n', 'v'}, 'ff', ':Autoformat')
       end
     },
-    -- LSP
-    {
-      'saghen/blink.cmp',
-      version = '*',
-      cond = is_not_large_file,
-      opts = {
-        keymap = {
-          preset = "super-tab"
-        },
-        sources = {
-          default = { 'path', 'buffer' }
-        },
-      },
-      opts_extend = { "sources.default" }
-    }
   }, -- end of plugin list
   { -- lazy.nvim options
     install = {
