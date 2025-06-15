@@ -8,7 +8,7 @@ IntensityAmount=0.1
 IntensityEffect=2
 
 [ColorEffects:Inactive]
-ChangeSelectionColor=false
+ChangeSelectionColor=true
 Color=112,111,110
 ColorAmount=0.025
 ColorEffect=2
@@ -19,8 +19,8 @@ IntensityAmount=-1
 IntensityEffect=0
 
 [Colors:Button]
-BackgroundAlternate=39,43,51
-BackgroundNormal=33,36,43
+BackgroundAlternate=38,40,48
+BackgroundNormal=31,34,40
 DecorationFocus=82,148,226
 DecorationHover=82,148,226
 ForegroundActive=61,174,233
@@ -33,8 +33,8 @@ ForegroundPositive=39,174,96
 ForegroundVisited=82,148,226
 
 [Colors:Complementary]
-BackgroundAlternate=39,43,51
-BackgroundNormal=33,36,43
+BackgroundAlternate=44,46,54
+BackgroundNormal=38,40,48
 DecorationFocus=82,148,226
 DecorationHover=82,148,226
 ForegroundActive=61,174,233
@@ -47,8 +47,8 @@ ForegroundPositive=39,174,96
 ForegroundVisited=82,148,226
 
 [Colors:Header]
-BackgroundAlternate=33,36,43
-BackgroundNormal=23,24,29
+BackgroundAlternate=38,40,48
+BackgroundNormal=31,34,40
 DecorationFocus=82,148,226
 DecorationHover=82,148,226
 ForegroundActive=61,174,233
@@ -61,8 +61,8 @@ ForegroundPositive=39,174,96
 ForegroundVisited=82,148,226
 
 [Colors:Header][Inactive]
-BackgroundAlternate=33,36,43
-BackgroundNormal=23,24,29
+BackgroundAlternate=38,40,48
+BackgroundNormal=31,34,40
 DecorationFocus=82,148,226
 DecorationHover=82,148,226
 ForegroundActive=61,174,233,150
@@ -89,8 +89,8 @@ ForegroundPositive=39,174,96
 ForegroundVisited=189,195,199
 
 [Colors:Tooltip]
-BackgroundAlternate=39,43,51
-BackgroundNormal=33,36,43
+BackgroundAlternate=38,40,48
+BackgroundNormal=31,34,40
 DecorationFocus=82,148,226
 DecorationHover=82,148,226
 ForegroundActive=61,174,233
@@ -103,8 +103,8 @@ ForegroundPositive=39,174,96
 ForegroundVisited=82,148,226
 
 [Colors:View]
-BackgroundAlternate=39,43,51
-BackgroundNormal=33,36,43
+BackgroundAlternate=44,46,54
+BackgroundNormal=38,40,48
 DecorationFocus=82,148,226
 DecorationHover=82,148,226
 ForegroundActive=61,174,233
@@ -117,8 +117,8 @@ ForegroundPositive=39,174,96
 ForegroundVisited=82,148,226
 
 [Colors:Window]
-BackgroundAlternate=39,43,51
-BackgroundNormal=23,24,29
+BackgroundAlternate=38,40,48
+BackgroundNormal=31,34,40
 DecorationFocus=82,148,226
 DecorationHover=82,148,226
 ForegroundActive=61,174,233
@@ -133,15 +133,16 @@ ForegroundVisited=82,148,226
 [General]
 ColorScheme=QogirDarkCustom
 Name=QogirDarkCustom
+TitlebarIsAccentColored=true
 shadeSortColumn=true
 
 [KDE]
 contrast=4
 
 [WM]
-activeBackground=23,24,29
-activeBlend=33,36,43
+activeBackground=31,34,40
+activeBlend=31,34,40
 activeForeground=177,178,183
-inactiveBackground=23,24,29
-inactiveBlend=33,36,43
+inactiveBackground=31,34,40
+inactiveBlend=40,42,51
 inactiveForeground=102,106,115
