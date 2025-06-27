@@ -120,9 +120,6 @@ noremap('i', '<C-e>', '<esc>$a')
 noremap_all('<C-s>', '<cmd>wa<cr>')
 -- quit
 noremap_all('<C-q>', '<cmd>qa<cr>')
--- search
-noremap('n', '<C-f>', 'f')
-noremap('v', '<C-f>', [[y/\V<C-R>=escape(@",'/\')<cr><cr>]])
 -- undo / redo
 noremap_all('<C-z>', '<cmd>undo<cr>')
 noremap_all({'<C-y>', '<C-S-z>'}, '<cmd>redo<cr>')
@@ -279,6 +276,18 @@ lazy.setup(
           section_separators = {left = '', right = ''},
         },
       }
+    },
+    -- telescope
+    {
+      'nvim-telescope/telescope.nvim',
+      branch = '0.1.x',
+      dependencies = { 'nvim-lua/plenary.nvim' },
+      config = function()
+        require('telescope').setup {}
+        local builtin = require('telescope.builtin')
+        noremap('n', '<C-p>', builtin.find_files)
+        noremap('n', '<C-f>', builtin.live_grep)
+      end
     },
     -- formatting
     {
