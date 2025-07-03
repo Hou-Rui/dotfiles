@@ -232,18 +232,9 @@ function frg {
 
 function imgcat {
   ensure_command img2sixel
-  local input mime args=() opts=()
-  while (( $# != 0 )); do
-    case "$1" in
-      (-w) shift; opts+=(-w "$1");;
-      (-h) shift; opts+=(-h "$1");;
-      (--) shift; break;;
-      (*) args+=("$1");;
-    esac
-    shift
-  done
-  args+=("$@")
-  for input in "$args[@]"; do
+  local input mime opts=()
+  zparseopts -D -E -F -- {w,-width}:=opts {h,-height}:=opts || return 1
+  for input in "$@"; do
     mime="$(file -b --mime-type "$input")"
     case "$mime" in
       ('image/svg+xml')
