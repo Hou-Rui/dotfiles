@@ -17,15 +17,32 @@ function {
   [[ -r $PROMPT_SCRIPT ]] && source "$PROMPT_SCRIPT"
 }
 
-
-### load plugins
-
-source ~/.zplug/init.zsh
+### utility functions
+function add_path {
+  local arg
+  for arg in "$@"; do
+    [[ :"$PATH": != *:"$arg":* ]] || continue
+    export PATH="$arg:$PATH"
+  done
+}
 
 function has_command {
   command -v $* &> /dev/null
 }
 
+function ensure_command {
+  local cmd
+  for cmd in "$@"; do
+    if ! has_command "$cmd"; then
+      print -u2 "Error: command '$cmd' required for this action."
+      return 1
+    fi
+  done
+}
+
+### load plugins
+
+source ~/.zplug/init.zsh
 zplug "robbyrussell/oh-my-zsh", use:"lib/*.zsh", defer:0
 zplug "plugins/dirhistory", from:oh-my-zsh, defer:1
 zplug "agkozak/zsh-z"
@@ -108,6 +125,12 @@ if has_command batman; then
   alias man=batman
 fi
 
+
+### semantic shell integration
+
+export POWERLEVEL9K_TERM_SHELL_INTEGRATION=true
+
+
 ### auto rehash executable completion
 
 zstyle ':completion:*' rehash true
@@ -153,7 +176,7 @@ function mkcd {
 
 function hgrep {
   if (( $# < 1 )); then
-    echo 'Usage: hrep <pattern>'
+    echo 'Usage: hgrep <pattern>'
     return 1
   fi
   if has_command rg; then
@@ -187,10 +210,12 @@ function repo {
 }
 
 function tldr {
+  ensure_command cht.sh
   cht.sh "$*?style=rrt"
 }
 
 function frg {
+  ensure_command rg fzf
   local result file linenumber
   result=$(rg --ignore-case --color=always --line-number --no-heading "$@" |
   fzf --ansi \
@@ -205,13 +230,39 @@ function frg {
   fi
 }
 
+function imgcat {
+  ensure_command img2sixel
+  local input mime args=() opts=()
+  while (( $# != 0 )); do
+    case "$1" in
+      (-w) shift; opts+=(-w "$1");;
+      (-h) shift; opts+=(-h "$1");;
+      (--) shift; break;;
+      (*) args+=("$1");;
+    esac
+    shift
+  done
+  args+=("$@")
+  for input in "$args[@]"; do
+    mime="$(file -b --mime-type "$input")"
+    case "$mime" in
+      ('image/svg+xml')
+        ensure_command magick
+        magick -background none "$input" png:- | img2sixel $opts;;
+      (*)
+        img2sixel "$input" $opts;;
+    esac
+  done
+}
+
 function wman {
+  ensure_command mktemp curl man
   local tmpfile="$(mktemp)"
   local ret=0
   local url="https://man.archlinux.org/man/$*.raw"
   local respcode="$(curl -o "$tmpfile" -sL "$url" -w '%{response_code}')"
   if (( respcode >= 400 )); then
-    echo "Failed to fetch man page for $* (response code: $respcode)"
+    print -u2 "Failed to fetch man page for $* (response code: $respcode)"
     ret=1
   else
     man -l "$tmpfile"
