@@ -53,11 +53,14 @@ vim.o.splitright = true
 vim.o.splitbelow = true
 vim.o.wildmenu = true
 vim.o.wildmode = 'longest:list,full'
+vim.o.updatetime = 500
 
 -- searching
 vim.o.showmatch = true
 vim.o.hlsearch = true
 vim.o.incsearch = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
 
 -- display invisible characters
 vim.o.list = true
