@@ -208,6 +208,12 @@ lazy.setup(
         noremap('i', '<C-_>', '<cmd>Commentary<cr>')
       end
     },
+    {
+      'rcarriga/nvim-notify',
+      config = function()
+        vim.notify = require("notify")
+      end
+    },
     -- sudo handling
     {
       'lambdalisue/suda.vim',
