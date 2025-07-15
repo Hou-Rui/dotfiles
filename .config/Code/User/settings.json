@@ -1,0 +1,79 @@
+{
+  "window.menuBarVisibility": "compact",
+  "editor.lineHeight": 1.8,
+  "editor.fontSize": 16,
+  "editor.fontFamily": "monospace",
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  "editor.renderWhitespace": "all",
+  "cmake.configureOnOpen": true,
+  "editor.insertSpaces": false,
+  "update.mode": "none",
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 200,
+  "git.openRepositoryInParentFolders": "never",
+  "editor.fontLigatures": true,
+  "extensions.ignoreRecommendations": true,
+  "editor.inlayHints.enabled": "offUnlessPressed",
+  "git.autofetch": true,
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": ["comment", "keyword"],
+        "settings": { "fontStyle": "italic" }
+      },
+      {
+        "scope": ["keyword.operator"],
+        "settings": { "fontStyle": "" }
+      }
+    ]
+  },
+  "terminal.integrated.lineHeight": 1.2,
+  "terminal.integrated.scrollback": 9999,
+  "explorer.sortOrder": "type",
+  "editor.guides.bracketPairs": true,
+  "security.workspace.trust.untrustedFiles": "open",
+  "terminal.external.linuxExec": "konsole",
+  "terminal.integrated.shellIntegration.enabled": false,
+  "workbench.colorCustomizations": {
+    "[Ayu Mirage Bordered]": {
+      "foreground": "#b5b8bc",
+      "sideBar.background": "#20232a",
+      "sideBarSectionHeader.background": "#20232a",
+      "banner.background": "#20232a",
+      "editorGroupHeader.tabsBackground": "#20232a",
+      "editorGroupHeader.noTabsBackground": "#20232a",
+      "panel.background": "#20232a",
+      "activityBar.background": "#20232a",
+      "statusBar.background": "#20232a",
+      "tab.inactiveBackground": "#20232a",
+      "editorWidget.background": "#20232a",
+      "quickInput.background": "#20232a",
+      "editor.background": "#25282f",
+      "minimap.background": "#25282f",
+      "terminal.background": "#20232a",
+      "tab.activeBackground": "#25282f",
+      "tab.hoverBackground": "#25282f",
+      "input.background": "#25282f",
+      "tab.border": "#41434b",
+      "input.border": "#41434b",
+      "activityBar.border": "#41434b",
+      "panel.border": "#41434b",
+      "sideBar.border": "#41434b",
+      "statusBar.border": "#41434b",
+      "sideBarSectionHeader.border": "#41434b",
+      "widget.border": "#41434b",
+      "editorWidget.border": "#41434b"
+    }
+  },
+  "git.blame.editorDecoration.enabled": true,
+  "git.blame.statusBarItem.enabled": true,
+  "debug.console.fontSize": 15,
+  "C_Cpp.clang_format_fallbackStyle": "Webkit",
+  "window.autoDetectColorScheme": true,
+  "window.controlsStyle": "hidden",
+  "window.commandCenter": false,
+  "workbench.layoutControl.enabled": false,
+  "chat.commandCenter.enabled": false,
+  "window.titleBarStyle": "native",
+  "terminal.integrated.enableImages": true
+}
