@@ -53,7 +53,7 @@ vim.o.splitright = true
 vim.o.splitbelow = true
 vim.o.wildmenu = true
 vim.o.wildmode = 'longest:list,full'
-vim.o.updatetime = 500
+vim.o.updatetime = 100
 
 -- searching
 vim.o.showmatch = true
@@ -95,10 +95,14 @@ noremap('n', 'q', '<nop>')
 noremap('n', '<cr>', '<cmd>noh<cr><cr>', {silent = true})
 
 -- diagnostic signs
-vim.fn.sign_define('DiagnosticSignError', { text = '', texthl = 'DiagnosticSignError' })
-vim.fn.sign_define('DiagnosticSignWarn', { text = '', texthl = 'DiagnosticSignWarn' })
-vim.fn.sign_define('DiagnosticSignInfo', { text = '', texthl = 'DiagnosticSignInfo' })
-vim.fn.sign_define('DiagnosticSignHint', { text = '', texthl = 'DiagnosticSignHint' })
+local function diag_sign_define(sign, text)
+  local token = 'DiagnosticSign' .. sign
+  vim.fn.sign_define(token, { text = text, texthl = token })
+end
+diag_sign_define('Error', '')
+diag_sign_define('Warn', '')
+diag_sign_define('Info', '')
+diag_sign_define('Hint', '')
 
 -- custom file association
 file_assoc('*.qml', 'qml')
@@ -206,12 +210,6 @@ lazy.setup(
       config = function()
         noremap({'n', 'v'}, '<C-_>', ':Commentary<cr>')
         noremap('i', '<C-_>', '<cmd>Commentary<cr>')
-      end
-    },
-    {
-      'rcarriga/nvim-notify',
-      config = function()
-        vim.notify = require("notify")
       end
     },
     -- sudo handling
