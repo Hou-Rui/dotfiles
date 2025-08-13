@@ -177,6 +177,12 @@ lazy.setup(
       'lewis6991/gitsigns.nvim',
       config = true,
     },
+    -- surrounding
+    {
+      'echasnovski/mini.surround',
+      version = '*',
+      config = true,
+    },
     -- multi cursor
     {
       "jake-stewart/multicursor.nvim",
@@ -244,11 +250,11 @@ lazy.setup(
     },
     -- indentation guide
     {
-      "lukas-reineke/indent-blankline.nvim",
-      main = 'ibl',
+      "shellRaining/hlchunk.nvim",
+      event = { "BufReadPre", "BufNewFile" },
       opts = {
-        indent = { char = '│' },
-      },
+        indent = { enable = true },
+      }
     },
     -- tab line
     {
