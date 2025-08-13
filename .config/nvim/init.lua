@@ -72,6 +72,9 @@ vim.o.fillchars = 'vert:│,horiz:─'
 -- auto read file
 vim.o.autoread = true
 
+-- persistent undo
+vim.o.undofile = true
+
 -- semi-transparent popups
 vim.o.pumblend = 8
 vim.o.winblend = 8
@@ -311,6 +314,11 @@ lazy.setup(
         noremap('n', '<C-p>', builtin.find_files)
         noremap('n', '<C-f>', builtin.live_grep)
       end
+    },
+    {
+      'echasnovski/mini.completion',
+      version = '*',
+      config = true,
     },
     -- formatting
     {
