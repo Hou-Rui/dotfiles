@@ -181,7 +181,17 @@ lazy.setup(
     {
       'echasnovski/mini.surround',
       version = '*',
-      config = true,
+      config = function()
+        local pp = { ['('] = ')', ['['] = ']', ['{'] = '}' }
+        local custom = {}
+        for l, r in pairs(pp) do
+          custom[l] = { output = { left = l, right = r } }
+          custom[r] = { output = { left = l .. ' ', right = r .. ' ' } }
+        end
+        require('mini.surround').setup {
+          custom_surroundings = custom
+        }
+      end
     },
     -- multi cursor
     {
@@ -200,13 +210,13 @@ lazy.setup(
         noremap("n", "<C-leftrelease>", mc.handleMouseRelease)
 
         mc.addKeymapLayer(function(layerSet)
-            layerSet("n", "<esc>", function()
-                if not mc.cursorsEnabled() then
-                    mc.enableCursors()
-                else
-                    mc.clearCursors()
-                end
-            end)
+          layerSet("n", "<esc>", function()
+            if not mc.cursorsEnabled() then
+              mc.enableCursors()
+            else
+              mc.clearCursors()
+            end
+          end)
         end)
       end
     },
