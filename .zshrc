@@ -67,7 +67,7 @@ fi
 function {
   [[ -d $ZSH_CUSTOM ]] || return
   local plugin
-  for plugin in "$ZSH_CUSTOM/"*; do
+  for plugin in "$ZSH_CUSTOM/"*(N); do
     zplug "$plugin", from:local
   done
 }
@@ -92,6 +92,9 @@ export AUTOSWITCH_FILE="venv"
 export GROFF_NO_SGR=1
 export WORDCHARS='-'
 
+### PATH
+
+add_path "$HOME/.local/bin" "$HOME/.ghcup/bin" "$HOME/.rustup/bin"
 
 ### aliases
 
