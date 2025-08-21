@@ -259,15 +259,16 @@ lazy.setup(
     },
     -- editor config
     {
-      "tpope/vim-sleuth",
+      'tpope/vim-sleuth',
     },
     -- indentation guide
     {
-      "shellRaining/hlchunk.nvim",
-      event = { "BufReadPre", "BufNewFile" },
+      'lukas-reineke/indent-blankline.nvim',
+      main = 'ibl',
+      event = 'VeryLazy',
       opts = {
-        indent = { enable = true },
-      }
+        indent = { char = '│' },
+      },
     },
     -- tab line
     {
@@ -297,9 +298,9 @@ lazy.setup(
       dependencies = {'nvim-tree/nvim-web-devicons'},
       opts = {
         options = {
-          theme = "ayu",
-          component_separators = {left = '', right = ''},
-          section_separators = {left = '', right = ''},
+          theme = 'ayu',
+          component_separators = { left = '', right = '' },
+          section_separators = { left = '', right = '' },
         },
       }
     },
