@@ -82,7 +82,7 @@
 
 window:not(.maximized), window:not(.maximized).background,
 menu, .menu, .context-menu,
-popover contents, popover arrow, tooltip {
+popover contents, popover arrow, tooltip, sheet {
     border-radius: 5px;
 }
 
