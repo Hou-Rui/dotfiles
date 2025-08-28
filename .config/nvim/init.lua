@@ -48,7 +48,9 @@ vim.o.number = true
 vim.o.mouse = 'a'
 vim.o.termguicolors = true
 vim.o.autoindent = true
+vim.o.cursorline = true
 vim.o.signcolumn = 'yes'
+
 vim.o.splitright = true
 vim.o.splitbelow = true
 vim.o.wildmenu = true
@@ -163,8 +165,7 @@ lazy.setup(
         local bg_overrides = {}
         for _, hi in pairs {
           'Normal', 'NormalFloat', 'ColorColumn', 'SignColumn',
-          'Folded', 'FoldColumn', 'CursorLine', 'CursorColumn',
-          'CursorLine', 'CursorColumn', 'VertSplit', 'WinSeparator'
+          'FoldColumn', 'VertSplit', 'WinSeparator'
         } do
           bg_overrides[hi] = { bg = 'None' }
         end
@@ -195,6 +196,20 @@ lazy.setup(
           custom_surroundings = custom
         }
       end
+    },
+    -- folding
+    {
+      'kevinhwang91/nvim-ufo',
+      dependencies = {'kevinhwang91/promise-async'},
+      event = 'VeryLazy',
+      init = function()
+        vim.o.foldlevelstart = 99
+      end,
+      opts = {
+        provider_selector = function(bufnr, filetype, buftype)
+          return {'treesitter', 'indent'}
+        end
+      }
     },
     -- multi cursor
     {
