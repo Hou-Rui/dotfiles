@@ -38,6 +38,10 @@
     "[Ayu Mirage Bordered]": {
       "foreground": "#b5b8bc",
       "sideBar.background": "#20232a",
+      "menu.background": "#20232a",
+      "menu.foreground": "#b5b8bc",
+      "menu.border": "#41434b",
+      "menu.separatorBackground": "#41434b",
       "sideBarSectionHeader.background": "#20232a",
       "banner.background": "#20232a",
       "editorGroupHeader.tabsBackground": "#20232a",
