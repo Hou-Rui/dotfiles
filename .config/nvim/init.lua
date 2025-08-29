@@ -179,12 +179,15 @@ lazy.setup(
     -- git integration
     {
       'lewis6991/gitsigns.nvim',
+      event = 'VeryLazy',
+      cond = is_not_large_file,
       config = true,
     },
     -- surrounding
     {
       'echasnovski/mini.surround',
       version = '*',
+      event = 'VeryLazy',
       config = function()
         local pp = { ['('] = ')', ['['] = ']', ['{'] = '}' }
         local custom = {}
@@ -202,6 +205,7 @@ lazy.setup(
       'kevinhwang91/nvim-ufo',
       dependencies = {'kevinhwang91/promise-async'},
       event = 'VeryLazy',
+      cond = is_not_large_file,
       init = function()
         vim.o.foldlevelstart = 99
       end,
@@ -215,6 +219,7 @@ lazy.setup(
     {
       "jake-stewart/multicursor.nvim",
       branch = "1.0",
+      event = 'VeryLazy',
       config = function()
         local mc = require("multicursor-nvim")
         mc.setup()
@@ -296,6 +301,7 @@ lazy.setup(
     -- tree sitter
     {
       'nvim-treesitter/nvim-treesitter',
+      event = 'VeryLazy',
       build = ':TSUpdate',
       main = 'nvim-treesitter.configs',
       cond = is_not_large_file,
@@ -310,6 +316,7 @@ lazy.setup(
     -- airline themes
     {
       'nvim-lualine/lualine.nvim',
+      event = 'VeryLazy',
       dependencies = {'nvim-tree/nvim-web-devicons'},
       opts = {
         options = {
@@ -323,6 +330,7 @@ lazy.setup(
     {
       'nvim-telescope/telescope.nvim',
       branch = '0.1.x',
+      event = 'VeryLazy',
       dependencies = { 'nvim-lua/plenary.nvim' },
       config = function()
         require('telescope').setup {}
@@ -334,6 +342,8 @@ lazy.setup(
     {
       'echasnovski/mini.completion',
       version = '*',
+      event = 'VeryLazy',
+      cond = is_not_large_file,
       config = true,
     },
     -- formatting
