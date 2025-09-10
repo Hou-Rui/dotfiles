@@ -2,22 +2,9 @@
 
 [[ $- =~ .*i.* ]] || return
 
-### XDG locations
-
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-export ZSH_CUSTOM="$XDG_DATA_HOME/zshcustom"
-
-### poerlevel10k instant prompt
-
-function {
-  local PROMPT_SCRIPT="$XDG_CACHE_HOME/p10k-instant-prompt-${(%):-%n}.zsh"
-  [[ -r $PROMPT_SCRIPT ]] && source "$PROMPT_SCRIPT"
-}
 
 ### utility functions
+
 function add_path {
   local arg
   for arg in "$@"; do
@@ -49,6 +36,34 @@ function first_available {
   done
   return 1
 }
+
+
+### execute default script for remote nodes
+
+function {
+  local sing_default="$HOME/.singularity_default"
+  if has_command singularity && [[ -x $sing_default ]]; then
+    exec "$sing_default"
+  fi
+}
+
+
+### XDG locations
+
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+export ZSH_CUSTOM="$XDG_DATA_HOME/zshcustom"
+
+
+### powerlevel10k instant prompt
+
+function {
+  local PROMPT_SCRIPT="$XDG_CACHE_HOME/p10k-instant-prompt-${(%):-%n}.zsh"
+  [[ -r $PROMPT_SCRIPT ]] && source "$PROMPT_SCRIPT"
+}
+
 
 ### load plugins
 
@@ -90,6 +105,7 @@ zplug load
 
 
 ### environment variables
+
 export EDITOR="$(first_available nvim vim nano)"
 export VISUAL="$EDITOR"
 export HISTFILE=~/.zhistory
@@ -101,11 +117,13 @@ export AUTOSWITCH_FILE="venv"
 export GROFF_NO_SGR=1
 export WORDCHARS='-'
 
+
 ### PATH
 
 add_path "$HOME/.local/bin" \
          "$HOME/.ghcup/bin" \
          "$HOME/.rustup/bin"
+
 
 ### aliases
 
