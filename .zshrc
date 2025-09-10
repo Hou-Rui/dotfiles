@@ -40,6 +40,16 @@ function ensure_command {
   done
 }
 
+function first_available {
+  local cmd
+  for cmd in "$@"; do
+    has_command "$cmd" || continue
+    echo "$cmd"
+    return 0
+  done
+  return 1
+}
+
 ### load plugins
 
 source ~/.zplug/init.zsh
@@ -80,9 +90,8 @@ zplug load
 
 
 ### environment variables
-
-export EDITOR='nvim'
-export VISUAL='nvim'
+export EDITOR="$(first_available nvim vim nano)"
+export VISUAL="$EDITOR"
 export HISTFILE=~/.zhistory
 export HISTSIZE=50000
 export SAVEHIST=50000
@@ -94,7 +103,9 @@ export WORDCHARS='-'
 
 ### PATH
 
-add_path "$HOME/.local/bin" "$HOME/.ghcup/bin" "$HOME/.rustup/bin"
+add_path "$HOME/.local/bin" \
+         "$HOME/.ghcup/bin" \
+         "$HOME/.rustup/bin"
 
 ### aliases
 
@@ -218,7 +229,7 @@ function tldr {
 }
 
 function frg {
-  ensure_command rg fzf
+  ensure_command bat rg fzf
   local result file linenumber
   result=$(rg --ignore-case --color=always --line-number --no-heading "$@" |
   fzf --ansi \
@@ -226,10 +237,10 @@ function frg {
       --delimiter ':' \
       --preview "bat --color=always {1} --highlight-line {2}" \
       --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')
-  file=${result%%:*}
-  linenumber=$(echo "${result}" | cut -d: -f2)
+  file="${result%%:*}"
+  linenumber="$(echo "${result}" | cut -d: -f2)"
   if [[ -n "$file" ]]; then
-    $EDITOR +"${linenumber}" "$file"
+    "$EDITOR" +"${linenumber}" "$file"
   fi
 }
 
