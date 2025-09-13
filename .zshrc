@@ -104,6 +104,13 @@ fi
 zplug load
 
 
+### PATH
+
+add_path "$HOME/.local/bin" \
+         "$HOME/.ghcup/bin" \
+         "$HOME/.rustup/bin"
+
+
 ### environment variables
 
 export EDITOR="$(first_available nvim vim nano)"
@@ -116,13 +123,6 @@ export DISABLE_UNTRACKED_FILES_DIRTY="true"
 export AUTOSWITCH_FILE="venv"
 export GROFF_NO_SGR=1
 export WORDCHARS='-'
-
-
-### PATH
-
-add_path "$HOME/.local/bin" \
-         "$HOME/.ghcup/bin" \
-         "$HOME/.rustup/bin"
 
 
 ### aliases
@@ -248,18 +248,29 @@ function tldr {
 
 function frg {
   ensure_command bat rg fzf
-  local result file linenumber
-  result=$(rg --ignore-case --color=always --line-number --no-heading "$@" |
-  fzf --ansi \
-      --color 'hl:-1:underline,hl+:-1:underline:reverse' \
+  local rg_prefix="rg --column --line-number --no-heading --color=always --smart-case "
+  local INITIAL_QUERY="${*:-}"
+  fzf --ansi --disabled --query "$INITIAL_QUERY" \
+      --bind "start:reload:$rg_prefix {q}" \
+      --bind "change:reload:sleep 0.1; $rg_prefix {q} || true" \
       --delimiter ':' \
-      --preview "bat --color=always {1} --highlight-line {2}" \
-      --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')
-  file="${result%%:*}"
-  linenumber="$(echo "${result}" | cut -d: -f2)"
-  if [[ -n "$file" ]]; then
-    "$EDITOR" +"${linenumber}" "$file"
-  fi
+      --preview 'bat --color=always {1} --highlight-line {2}' \
+      --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
+      --bind "enter:become($EDITOR {1} +{2})"
+  # result=$(
+  #   rg --ignore-case \
+  #      --color=always \
+  #      --line-number --no-heading "$@" |
+  #   fzf --ansi \
+  #       --color 'hl:-1:underline,hl+:-1:underline:reverse' \
+  #       --delimiter ':' \
+  #       --preview 'bat --color=always {1} --highlight-line {2}' \
+  #       --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')
+  # file="${result%%:*}"
+  # linenumber="$(echo "${result}" | cut -d: -f2)"
+  # if [[ -n "$file" ]]; then
+  #   "$EDITOR" +"${linenumber}" "$file"
+  # fi
 }
 
 function imgcat {
