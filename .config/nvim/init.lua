@@ -144,11 +144,6 @@ noremap('n', '<Tab>', '>>')
 noremap('v', '<S-Tab>', '<gv')
 noremap('n', '<S-Tab>', '<<')
 noremap('i', '<S-Tab>', '<C-d>')
--- swap lines
-noremap('n', '<A-Up>', 'ddkP')
-noremap('i', '<A-Up>', '<esc>ddkP')
-noremap('n', '<A-Down>', 'ddp')
-noremap('i', '<A-Down>', '<esc>ddp')
 -- select all
 noremap('n', '<A-a>', 'gg^vG$')
 noremap({'i', 'x', 'v'}, '<A-a>', '<esc>gg^vG$')
@@ -339,12 +334,28 @@ lazy.setup(
         noremap('n', '<C-f>', builtin.live_grep)
       end
     },
+    -- completion
     {
       'echasnovski/mini.completion',
       version = '*',
       event = 'VeryLazy',
       cond = is_not_large_file,
       config = true,
+    },
+    -- move lines
+    {
+      'nvim-mini/mini.move',
+      version = '*',
+      event = 'VeryLazy',
+      opts = {
+          mappings = {
+            left = '<A-left>', right = '<A-right>', down = '<A-down>', up = '<A-up>',
+            line_left = '<A-left>', line_right = '<A-right>', line_down = '<A-down>', line_up = '<A-up>',
+          },
+          options = {
+            reindent_linewise = true,
+          },
+      }
     },
     -- formatting
     {
