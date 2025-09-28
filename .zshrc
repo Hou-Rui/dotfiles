@@ -273,22 +273,6 @@ function frg {
   # fi
 }
 
-function imgcat {
-  ensure_command img2sixel
-  local input mime opts=()
-  zparseopts -D -E -F -- {w,-width}:=opts {h,-height}:=opts || return 1
-  for input in "$@"; do
-    mime="$(file -b --mime-type "$input")"
-    case "$mime" in
-      ('image/svg+xml')
-        ensure_command magick
-        magick -background none "$input" png:- | img2sixel $opts;;
-      (*)
-        img2sixel "$input" $opts;;
-    esac
-  done
-}
-
 function wman {
   ensure_command mktemp curl man
   local tmpfile="$(mktemp)"
