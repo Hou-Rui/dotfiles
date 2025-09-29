@@ -68,14 +68,13 @@ function {
 ### load plugins
 
 source ~/.zplug/init.zsh
-zplug "robbyrussell/oh-my-zsh", use:"lib/*.zsh", defer:0
-zplug "plugins/dirhistory", from:oh-my-zsh, defer:1
+zplug "mmorys/dirhistory"
 zplug "agkozak/zsh-z"
 zplug "le0me55i/zsh-extract"
-zplug "zdharma-continuum/fast-syntax-highlighting", defer:2
+zplug "zdharma-continuum/fast-syntax-highlighting"
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-autosuggestions"
-zplug 'knu/zsh-manydots-magic', use:manydots-magic, defer:3
+zplug 'knu/zsh-manydots-magic', use:manydots-magic, defer:1
 zplug "romkatv/powerlevel10k", as:theme, depth:1
 
 if [[ -z $SINGULARITY_CONTAINER ]]; then
@@ -104,14 +103,18 @@ fi
 zplug load
 
 
-### PATH
+### key bindings
+
+bindkey "^[[1;5D" backward-word
+bindkey "^[[1;5C" forward-word
+bindkey '^W' backward-kill-word
+
+
+### environment variables
 
 add_path "$HOME/.local/bin" \
          "$HOME/.ghcup/bin" \
          "$HOME/.rustup/bin"
-
-
-### environment variables
 
 export EDITOR="$(first_available nvim vim nano)"
 export VISUAL="$EDITOR"
@@ -120,9 +123,6 @@ export HISTSIZE=50000
 export SAVEHIST=50000
 export COLORTERM=truecolor
 export DISABLE_UNTRACKED_FILES_DIRTY="true"
-export AUTOSWITCH_FILE="venv"
-export GROFF_NO_SGR=1
-export WORDCHARS='-'
 
 
 ### aliases
@@ -158,13 +158,9 @@ if has_command batman; then
 fi
 
 
-### semantic shell integration
-
-export POWERLEVEL9K_TERM_SHELL_INTEGRATION=true
-
-
 ### auto rehash executable completion
 
+zstyle ':completion:*' menu yes select
 zstyle ':completion:*' rehash true
 zstyle ':completion:*:functions' ignored-patterns '_*'
 
@@ -242,35 +238,26 @@ function repo {
 }
 
 function tldr {
-  ensure_command cht.sh
-  cht.sh "$*?style=rrt"
+  if has_command cht.sh; then
+    cht.sh "$*?style=rrt"
+  elif has_command curl; then
+    curl "cht.sh/$*?style=rrt"
+  else
+    print -u2 'No TLDR providers'
+    return 1
+  fi
 }
 
 function frg {
   ensure_command bat rg fzf
   local rg_prefix="rg --column --line-number --no-heading --color=always --smart-case "
-  local INITIAL_QUERY="${*:-}"
-  fzf --ansi --disabled --query "$INITIAL_QUERY" \
+  fzf --ansi --disabled --query "${*:-}" \
       --bind "start:reload:$rg_prefix {q}" \
       --bind "change:reload:sleep 0.1; $rg_prefix {q} || true" \
       --delimiter ':' \
       --preview 'bat --color=always {1} --highlight-line {2}' \
       --preview-window 'up,60%,border-bottom,+{2}+3/3,~3' \
       --bind "enter:become($EDITOR {1} +{2})"
-  # result=$(
-  #   rg --ignore-case \
-  #      --color=always \
-  #      --line-number --no-heading "$@" |
-  #   fzf --ansi \
-  #       --color 'hl:-1:underline,hl+:-1:underline:reverse' \
-  #       --delimiter ':' \
-  #       --preview 'bat --color=always {1} --highlight-line {2}' \
-  #       --preview-window 'up,60%,border-bottom,+{2}+3/3,~3')
-  # file="${result%%:*}"
-  # linenumber="$(echo "${result}" | cut -d: -f2)"
-  # if [[ -n "$file" ]]; then
-  #   "$EDITOR" +"${linenumber}" "$file"
-  # fi
 }
 
 function wman {
