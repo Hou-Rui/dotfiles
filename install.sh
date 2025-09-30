@@ -2,11 +2,15 @@
 set -eu
 
 CURDIR="$(dirname "$(readlink -f "$0")")"
+REMOTE=
 
 home_ins() {
   for f in "$@"; do
-    SRC="$CURDIR/$1" DEST="$HOME/$1"
+    SRC="$CURDIR/$f" DEST="$HOME/$f"
     ln -sf "$SRC" "$DEST"
+    if ! [ -z "$REMOTE" ]; then
+      scp -r "$SRC" "$REMOTE:~/$f" 
+    fi
   done
 }
 
@@ -15,11 +19,19 @@ home_ins_targets() {
     case "$target" in
       ('zsh')  home_ins '.zshrc' '.p10k.zsh';;
       ('nvim') home_ins '.config/nvim/init.lua';;
-      ('gtk4') home_ins '.config/gtk-4.0/gtk.css';;
+      ('gtk4') REMOTE= home_ins '.config/gtk-4.0/gtk.css';;
       (*) echo "Unknown target $target"; exit 1
     esac
   done
 }
+
+while getopts w: opt; do
+  case "$opt" in
+    (w) REMOTE="$OPTARG";;
+    (?) echo "Unknown option $opt"; exit 2
+  esac
+done
+shift $(($OPTIND - 1))
 
 if [ $# -eq 0 ]; then
   home_ins_targets 'zsh' 'nvim' 'gtk4'
