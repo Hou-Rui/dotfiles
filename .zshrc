@@ -71,10 +71,10 @@ source ~/.zplug/init.zsh
 zplug "mmorys/dirhistory"
 zplug "agkozak/zsh-z"
 zplug "le0me55i/zsh-extract"
-zplug "zdharma-continuum/fast-syntax-highlighting"
-zplug "zsh-users/zsh-completions"
-zplug "zsh-users/zsh-autosuggestions"
-zplug 'knu/zsh-manydots-magic', use:manydots-magic, defer:1
+zplug "zdharma-continuum/fast-syntax-highlighting", defer:2
+zplug "zsh-users/zsh-completions", defer:1
+zplug "zsh-users/zsh-autosuggestions", defer:1
+zplug 'knu/zsh-manydots-magic', use:manydots-magic, defer:3
 zplug "romkatv/powerlevel10k", as:theme, depth:1
 
 if [[ -z $SINGULARITY_CONTAINER ]]; then
@@ -103,14 +103,28 @@ fi
 zplug load
 
 
-### key bindings
 
+
+
+### options & environment variables
+
+setopt autocd globdots histignoredups
+
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+
+bindkey "^[[A" up-line-or-beginning-search
+bindkey "^[[B" down-line-or-beginning-search
 bindkey "^[[1;5D" backward-word
 bindkey "^[[1;5C" forward-word
 bindkey '^W' backward-kill-word
 
-
-### environment variables
+zstyle ':completion:*' menu yes select
+zstyle ':completion:*' rehash true
+zstyle ':completion:*:functions' ignored-patterns '_*'
 
 add_path "$HOME/.local/bin" \
          "$HOME/.ghcup/bin" \
@@ -156,13 +170,6 @@ fi
 if has_command batman; then
   alias man=batman
 fi
-
-
-### auto rehash executable completion
-
-zstyle ':completion:*' menu yes select
-zstyle ':completion:*' rehash true
-zstyle ':completion:*:functions' ignored-patterns '_*'
 
 
 ### speed up copy & paste
