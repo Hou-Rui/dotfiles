@@ -103,9 +103,6 @@ fi
 zplug load
 
 
-
-
-
 ### options & environment variables
 
 setopt autocd globdots histignoredups
@@ -147,6 +144,9 @@ if has_command eza; then
   alias ls='eza'
   alias l='eza --long --icons --group --all'
   alias tree='eza --tree'
+else
+  alias ls='ls --color'
+  alias l='ls -l --color --all -F -h'
 fi
 
 if has_command fdfind; then
