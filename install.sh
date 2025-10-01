@@ -8,6 +8,9 @@ home_ins() {
   for f in "$@"; do
     echo "Installing $f"
     SRC="$CURDIR/$f" DEST="$HOME/$f"
+    if [ -e "$DEST" ]; then
+      rm -rf "$DEST"
+    fi
     cp -rf "$SRC" "$DEST"
     if ! [ -z "$REMOTE" ]; then
       scp -r "$SRC" "$REMOTE:~/$f" 
