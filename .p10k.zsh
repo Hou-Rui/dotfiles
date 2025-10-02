@@ -113,6 +113,7 @@
     # battery               # internal battery
     # wifi                  # wifi speed
     # example               # example user-defined segment (see prompt_example function below)
+    singularity             # singularity image name
     time                    # current time
   )
 
@@ -1646,6 +1647,12 @@
   # POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS. It displays an icon and orange text greeting the user.
   #
   # Type `p10k help segment` for documentation and a more sophisticated example.
+  function prompt_singularity() {
+    if [[ -n $SINGULARITY_NAME ]]; then
+      p10k segment -f 70 -t "$SINGULARITY_NAME"
+    fi
+  }
+
   function prompt_example() {
     p10k segment -f 208 -i '⭐' -t 'hello, %n'
   }
