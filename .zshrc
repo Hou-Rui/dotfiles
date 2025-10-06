@@ -135,6 +135,7 @@ export HISTFILE=~/.zhistory
 export HISTSIZE=50000
 export SAVEHIST=50000
 export COLORTERM=truecolor
+export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 export DISABLE_UNTRACKED_FILES_DIRTY="true"
 
 
