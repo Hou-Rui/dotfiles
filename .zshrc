@@ -120,6 +120,7 @@ bindkey "^[OB" down-line-or-beginning-search
 bindkey "^[[1;5D" backward-word
 bindkey "^[[1;5C" forward-word
 bindkey '^W' backward-kill-word
+bindkey -e
 
 zstyle ':completion:*' menu yes select
 zstyle ':completion:*' rehash true
