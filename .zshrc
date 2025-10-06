@@ -161,6 +161,7 @@ fi
 alias open='xdg-open'
 alias x='extract'
 alias cls='clear'
+alias md='mkdir'
 alias src="source $HOME/.zshrc"
 alias help='run-help'
 
