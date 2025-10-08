@@ -74,6 +74,7 @@ zplug "le0me55i/zsh-extract"
 zplug "zdharma-continuum/fast-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-completions", defer:1
 zplug "zsh-users/zsh-autosuggestions", defer:1
+zplug "zsh-users/zsh-history-substring-search", as:plugin
 zplug 'knu/zsh-manydots-magic', use:manydots-magic, defer:3
 zplug "romkatv/powerlevel10k", as:theme, depth:1
 
