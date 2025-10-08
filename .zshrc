@@ -74,7 +74,6 @@ zplug "le0me55i/zsh-extract"
 zplug "zdharma-continuum/fast-syntax-highlighting", defer:2
 zplug "zsh-users/zsh-completions", defer:1
 zplug "zsh-users/zsh-autosuggestions", defer:1
-zplug "zsh-users/zsh-history-substring-search", as:plugin
 zplug 'knu/zsh-manydots-magic', use:manydots-magic, defer:3
 zplug "romkatv/powerlevel10k", as:theme, depth:1
 
@@ -114,6 +113,7 @@ autoload -U down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
 
+bindkey -e
 bindkey "^[[A" up-line-or-beginning-search
 bindkey "^[OA" up-line-or-beginning-search
 bindkey "^[[B" down-line-or-beginning-search
@@ -121,7 +121,6 @@ bindkey "^[OB" down-line-or-beginning-search
 bindkey "^[[1;5D" backward-word
 bindkey "^[[1;5C" forward-word
 bindkey '^W' backward-kill-word
-bindkey -e
 
 zstyle ':completion:*' menu yes select
 zstyle ':completion:*' rehash true
