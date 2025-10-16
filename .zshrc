@@ -71,10 +71,11 @@ source ~/.zplug/init.zsh
 zplug "mmorys/dirhistory"
 zplug "agkozak/zsh-z"
 zplug "le0me55i/zsh-extract"
-zplug "zdharma-continuum/fast-syntax-highlighting", defer:2
-zplug "zsh-users/zsh-completions", defer:1
-zplug "zsh-users/zsh-autosuggestions", defer:1
-zplug 'knu/zsh-manydots-magic', use:manydots-magic, defer:3
+zplug "zsh-users/zsh-history-substring-search"
+zplug "zsh-users/zsh-completions"
+zplug "zsh-users/zsh-autosuggestions", defer:2
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
+zplug 'twang817/zsh-manydots-magic', use:manydots-magic
 zplug "romkatv/powerlevel10k", as:theme, depth:1
 
 if [[ -z $SINGULARITY_CONTAINER ]]; then
@@ -107,20 +108,12 @@ zplug load
 
 setopt autocd globdots histignoredups
 
-autoload -U up-line-or-beginning-search
-autoload -U down-line-or-beginning-search
-
-zle -N up-line-or-beginning-search
-zle -N down-line-or-beginning-search
-
-bindkey -e
-bindkey "^[[A" up-line-or-beginning-search
-bindkey "^[OA" up-line-or-beginning-search
-bindkey "^[[B" down-line-or-beginning-search
-bindkey "^[OB" down-line-or-beginning-search
+bindkey "^[[A" history-substring-search-up
+bindkey "^[OA" history-substring-search-up
+bindkey "^[[B" history-substring-search-down
+bindkey "^[OB" history-substring-search-down
 bindkey "^[[1;5D" backward-word
 bindkey "^[[1;5C" forward-word
-bindkey '^W' backward-kill-word
 
 zstyle ':completion:*' menu yes select
 zstyle ':completion:*' rehash true
