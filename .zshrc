@@ -185,6 +185,11 @@ zstyle :bracketed-paste-magic paste-init pasteinit
 zstyle :bracketed-paste-magic paste-finish pastefinish
 
 
+## advanced move
+
+autoload -Uz zmv
+alias mmv='noglob zmv -W'
+
 ### functions
 
 function zshrc {
