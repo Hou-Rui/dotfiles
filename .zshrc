@@ -132,6 +132,7 @@ export COLORTERM=truecolor
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 export DISABLE_UNTRACKED_FILES_DIRTY="true"
 
+zmodload zsh/zutil
 
 ### aliases
 
@@ -272,19 +273,18 @@ function frg {
 
 function wman {
   ensure_command mktemp curl man
-  local tmpfile="$(mktemp)"
-  local ret=0
-  local url="https://man.archlinux.org/man/$*.raw"
-  local respcode="$(curl -o "$tmpfile" -sL "$url" -w '%{response_code}')"
-  if (( respcode >= 400 )); then
-    print -u2 "Failed to fetch man page for $* (response code: $respcode)"
-    ret=1
-  else
+  {
+    local url="https://man.archlinux.org/man/$*.raw"
+    local tmpfile="$(mktemp)"
+    local respcode="$(curl -o "$tmpfile" -sL "$url" -w '%{response_code}')"
+    if (( respcode >= 400 )); then
+      print -u2 "Failed to fetch man page for $* (response code: $respcode)"
+      return 1
+    fi
     man -l "$tmpfile"
-    ret=$?
-  fi
-  rm "$tmpfile"
-  return "$ret"
+  } always {
+    rm "$tmpfile"
+  }
 }
 
 
