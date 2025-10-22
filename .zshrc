@@ -74,7 +74,7 @@ zplug "le0me55i/zsh-extract"
 zplug "zsh-users/zsh-history-substring-search"
 zplug "zsh-users/zsh-completions"
 zplug "zsh-users/zsh-autosuggestions", defer:2
-zplug "zsh-users/zsh-syntax-highlighting", defer:2
+zplug "zdharma-continuum/fast-syntax-highlighting", defer:2
 zplug 'twang817/zsh-manydots-magic', use:manydots-magic
 zplug "romkatv/powerlevel10k", as:theme, depth:1
 
@@ -168,6 +168,13 @@ fi
 
 if has_command batman; then
   alias man=batman
+fi
+
+
+### disable slow highlighting
+
+if ! [[ -z $FAST_HIGHLIGHT ]]; then
+  FAST_HIGHLIGHT[chroma-make]=
 fi
 
 
