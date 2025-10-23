@@ -294,6 +294,10 @@ function wman {
   }
 }
 
+function each {
+  local var="$1"; shift; local cmd="$*"
+  eval "while read -r $var; do $cmd; done"
+}
 
 ### load powerlevel10k config
 
