@@ -296,9 +296,9 @@ lazy.setup(
     -- tree sitter
     {
       'nvim-treesitter/nvim-treesitter',
-      event = 'VeryLazy',
+      branch = 'main',
+      lazy = false,
       build = ':TSUpdate',
-      main = 'nvim-treesitter.configs',
       cond = is_not_large_file,
       opts = {
         auto_install = true,
