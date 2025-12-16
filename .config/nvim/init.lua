@@ -324,7 +324,7 @@ lazy.setup(
     -- telescope
     {
       'nvim-telescope/telescope.nvim',
-      branch = '0.1.x',
+      version = '*',
       event = 'VeryLazy',
       dependencies = { 'nvim-lua/plenary.nvim' },
       config = function()
