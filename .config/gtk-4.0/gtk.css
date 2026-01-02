@@ -13,6 +13,9 @@
 @define-color headerbar_border_color @borders_breeze;
 @define-color headerbar_shade_color @borders_breeze;
 
+@define-color active_toggle_bg_color @tooltip_background_breeze;
+@define-color active_toggle_fg_color @tooltip_text_breeze;
+
 @define-color popover_bg_color @tooltip_background_breeze;
 @define-color popover_fg_color @tooltip_text_breeze;
 
@@ -80,9 +83,18 @@
 @define-color dark_4 #241f31;
 @define-color dark_5 #000000;
 
+:root {
+  --window-radius: 5px;
+}
+
 window:not(.maximized), window:not(.maximized).background,
-menu, .menu, .context-menu,
-popover contents, popover arrow, tooltip, sheet {
+popover contents, popover arrow , sheet,
+tooltip, menu, .menu, .context-menu,
+list.boxed-list, row, toggle, toggle-group,
+box.card,
+entry,
+:not(spinbutton):not(.linked) > button:not(.circular):not(.pill),
+splitbutton, modelbutton {
     border-radius: 5px;
 }
 
