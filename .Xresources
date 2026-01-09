@@ -1,0 +1,6 @@
+! XTerm & UXTerm
+*VT100*background: #1f2228
+*VT100*foreground: #fcfcfc
+*VT100*faceName: JetbrainsMono Nerd Font:size=12:antialias=true
+*VT100*geometry: 105x35
+*termName: xterm-256color
