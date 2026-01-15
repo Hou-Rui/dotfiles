@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -eu
 
 CURDIR="$(dirname "$(readlink -f "$0")")"
@@ -22,8 +22,9 @@ home_ins_targets() {
   for target in "$@"; do
     case "$target" in
       ('zsh')  home_ins '.zshrc' '.p10k.zsh';;
-      ('nvim') home_ins '.config/nvim/init.lua';;
-      ('gtk4') REMOTE= home_ins '.config/gtk-4.0/gtk.css';;
+      ('nvim') home_ins '.config/nvim'/**;;
+      ('gtk4') REMOTE= home_ins '.config/gtk-4.0'/**;;
+      ('kate') REMOTE= home_ins '.config/kate'/**;;
       (*) echo "Unknown target $target"; exit 1
     esac
   done
@@ -38,7 +39,7 @@ done
 shift $(($OPTIND - 1))
 
 if [ $# -eq 0 ]; then
-  home_ins_targets 'zsh' 'nvim' 'gtk4'
+  home_ins_targets 'zsh' 'nvim' 'kate' 'gtk4'
 else
   home_ins_targets "$@"
 fi

@@ -1,0 +1,38 @@
+{
+    "servers": {
+        "python": {
+            "command": [
+                "basedpyright-langserver",
+                "--stdio"
+            ],
+            "url": "https://github.com/detachhead/basedpyright",
+            "root": ".",
+            "rootIndicationFilePatterns": [
+                "pyproject.toml",
+                "setup.py",
+                "setup.cfg",
+                "requirements.txt",
+                "Pipfile",
+                "pyrightconfig.json"
+            ],
+            "settings": {
+                "basedpyright": {
+                    "analysis": {
+                        "typeCheckingMode": "basic"
+                    }
+                }
+            },
+            "highlightingModeRegex": "^Python$"
+        },
+        "qml": {
+            "command": [
+                "qmlls",
+                "-b",
+                "."
+            ],
+            "url": "https://code.qt.io/cgit/qt/qtdeclarative.git/tree/src/qmlls",
+            "root": ".",
+            "highlightingModeRegex": "^QML$"
+        }
+    }
+}
