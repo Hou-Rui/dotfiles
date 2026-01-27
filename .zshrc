@@ -161,6 +161,7 @@ alias cls='clear'
 alias md='mkdir'
 alias src="source $HOME/.zshrc"
 alias help='run-help'
+alias history='history 0'
 
 if has_command nvim && ! has_command vim; then
   alias vim='nvim'
