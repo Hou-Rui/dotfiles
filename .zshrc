@@ -82,11 +82,16 @@ if [[ -z $SINGULARITY_CONTAINER ]]; then
   zplug "plugins/command-not-found", from:oh-my-zsh, defer:1
 fi
 
+if [[ -n $SSH_CLIENT ]]; then
+  alias notify-send= # workaround zsh-auto-notify detecting notify-send
+fi
+
 if has_command awk notify-send; then
   zplug "MichaelAquilina/zsh-auto-notify"
+  export AUTO_NOTIFY_ENABLE_SSH=1
   export AUTO_NOTIFY_THRESHOLD=30
-  export AUTO_NOTIFY_ICON_SUCCESS='/usr/share/icons/breeze/status/64/dialog-positive.svg'
-  export AUTO_NOTIFY_ICON_FAILURE='/usr/share/icons/breeze/status/64/dialog-error.svg'
+  export AUTO_NOTIFY_ICON_SUCCESS='dialog-positive'
+  export AUTO_NOTIFY_ICON_FAILURE='dialog-error'
 fi
 
 function {
@@ -293,11 +298,6 @@ function wman {
   } always {
     rm "$tmpfile"
   }
-}
-
-function each {
-  local var="$1"; shift; local cmd="$*"
-  eval "while read -r $var; do $cmd; done"
 }
 
 ### load powerlevel10k config
