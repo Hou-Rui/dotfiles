@@ -54,59 +54,97 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-export ZSH_CUSTOM="$XDG_DATA_HOME/zshcustom"
 
+
+### Plugin manager
+export ZPLUGINDIR=${ZPLUGINDIR:-$XDG_CONFIG_HOME/zsh/plugins}
+
+function plugin-load {
+  ensure_command git
+  local plugin repo commitsha plugdir initfile initfiles=()
+  : "$ZPLUGINDIR"
+  for plugin in "$@"; do
+    repo="$plugin"
+    clone_args=(-q --depth 1 --recursive --shallow-submodules)
+    if [[ "$plugin" == *'@'* ]]; then
+      repo="${plugin%@*}"
+      commitsha="${plugin#*@}"
+      clone_args+=(--no-checkout)
+    fi
+    plugdir="$ZPLUGINDIR/${repo:t}"
+    initfile="$plugdir/${repo:t}.plugin.zsh"
+    if [[ ! -d $plugdir ]]; then
+      echo "Cloning $repo..."
+      git clone "$clone_args[@]" "https://github.com/$repo" "$plugdir"
+      if [[ -n "$commitsha" ]]; then
+        git -C "$plugdir" fetch -q origin "$commitsha"
+        git -C "$plugdir" checkout -q "$commitsha"
+      fi
+    fi
+    if [[ ! -e $initfile ]]; then
+      initfiles=($plugdir/*.{plugin.zsh,zsh-theme,zsh,sh}(N))
+      if (( $#initfiles == 0 )); then
+        print -u2 "No init file found '$repo'."
+        continue
+      fi
+      ln -sf "$initfiles[1]" "$initfile"
+    fi
+    fpath+="$plugdir"
+    (( $+functions[zsh-defer] )) && zsh-defer . "$initfile" || . "$initfile"
+  done
+}
+
+function plugin-update {
+  local d
+  unsetopt MONITOR
+  for d in "$ZPLUGINDIR"/*/.git(/); do
+    echo "Updating ${d:h:t}..."
+    ( git -C "${d:h}" pull \
+      --ff --recurse-submodules --depth 1 --rebase --autostash ) &
+  done
+  wait
+  setopt MONITOR
+}
 
 ### powerlevel10k instant prompt
 
 function {
-  local PROMPT_SCRIPT="$XDG_CACHE_HOME/p10k-instant-prompt-${(%):-%n}.zsh"
-  [[ -r $PROMPT_SCRIPT ]] && source "$PROMPT_SCRIPT"
+  local prompt_script="$XDG_CACHE_HOME/p10k-instant-prompt-${(%):-%n}.zsh"
+  [[ -r $prompt_script ]] && source "$prompt_script"
 }
 
 
 ### load plugins
 
-source ~/.zplug/init.zsh
-zplug "mmorys/dirhistory"
-zplug "agkozak/zsh-z"
-zplug "le0me55i/zsh-extract"
-zplug "zsh-users/zsh-history-substring-search"
-zplug "zsh-users/zsh-completions"
-zplug "zsh-users/zsh-autosuggestions", defer:2
-zplug "zdharma-continuum/fast-syntax-highlighting", defer:2
-zplug 'twang817/zsh-manydots-magic', use:manydots-magic
-zplug "romkatv/powerlevel10k", as:theme, depth:1
-
-if [[ -z $SINGULARITY_CONTAINER ]]; then
-  zplug "plugins/command-not-found", from:oh-my-zsh, defer:1
-fi
-
-if [[ -n $SSH_CLIENT ]]; then
-  alias notify-send= # workaround zsh-auto-notify detecting notify-send
-fi
-
-if has_command awk notify-send; then
-  zplug "MichaelAquilina/zsh-auto-notify"
-  export AUTO_NOTIFY_ENABLE_SSH=1
-  export AUTO_NOTIFY_THRESHOLD=30
-  export AUTO_NOTIFY_ICON_SUCCESS='dialog-positive'
-  export AUTO_NOTIFY_ICON_FAILURE='dialog-error'
-fi
-
 function {
-  [[ -d $ZSH_CUSTOM ]] || return
-  local plugin
-  for plugin in "$ZSH_CUSTOM/"*(N); do
-    zplug "$plugin", from:local
-  done
+  local plugins=(
+    'romkatv/powerlevel10k'
+    'romkatv/zsh-defer'
+    'zsh-users/zsh-completions'
+    'zsh-users/zsh-autosuggestions'
+    'zsh-users/zsh-history-substring-search'
+    'zdharma-continuum/fast-syntax-highlighting'
+    'mmorys/dirhistory'
+    'agkozak/zsh-z'
+    'le0me55i/zsh-extract'
+    'twang817/zsh-manydots-magic'
+  )
+
+  # workaround zsh-auto-notify detecting notify-send
+  if [[ -n $SSH_CLIENT ]]; then
+    alias notify-send=
+  fi
+
+  if has_command awk notify-send; then
+    plugins+=('MichaelAquilina/zsh-auto-notify')
+    export AUTO_NOTIFY_ENABLE_SSH=1
+    export AUTO_NOTIFY_THRESHOLD=30
+    export AUTO_NOTIFY_ICON_SUCCESS='dialog-positive'
+    export AUTO_NOTIFY_ICON_FAILURE='dialog-error'
+  fi
+
+  plugin-load "$plugins[@]"
 }
-
-if [[ $TERM == linux ]]; then
-  export TERM=linux-16color
-fi
-
-zplug load
 
 
 ### options & environment variables
@@ -121,6 +159,7 @@ bindkey "^[OB" history-substring-search-down
 bindkey "^[[1;5D" backward-word
 bindkey "^[[1;5C" forward-word
 
+autoload -Uz compinit && compinit -i
 zstyle ':completion:*' menu yes select
 zstyle ':completion:*' rehash true
 zstyle ':completion:*:functions' ignored-patterns '_*'
@@ -137,6 +176,9 @@ export SAVEHIST=50000
 export COLORTERM=truecolor
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 export DISABLE_UNTRACKED_FILES_DIRTY="true"
+if [[ $TERM == linux ]]; then
+  export TERM=linux-16color
+fi
 
 zmodload zsh/zutil
 
@@ -173,8 +215,15 @@ if has_command nvim && ! has_command vim; then
 fi
 
 if has_command batman; then
-  alias man=batman
+  alias man='batman'
 fi
+
+
+### pkgfile as command-not-found handler
+function {
+  local handler='/usr/share/doc/pkgfile/command-not-found.zsh'
+  [[ -e $handler ]] && . "$handler"
+}
 
 
 ### disable slow highlighting
@@ -199,7 +248,7 @@ zstyle :bracketed-paste-magic paste-init pasteinit
 zstyle :bracketed-paste-magic paste-finish pastefinish
 
 
-## advanced move
+### advanced move
 
 autoload -Uz zmv
 alias mmv='noglob zmv -W'
