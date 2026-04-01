@@ -57,7 +57,8 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 
 ### Plugin manager
-export ZPLUGINDIR=${ZPLUGINDIR:-$XDG_CONFIG_HOME/zsh/plugins}
+export ZCONFIGDIR="$XDG_CONFIG_HOME/zsh"
+export ZPLUGINDIR="${ZPLUGINDIR:-$ZCONFIGDIR/plugins}"
 
 function plugin-load {
   ensure_command git
@@ -125,10 +126,15 @@ function {
     'zsh-users/zsh-history-substring-search'
     'zdharma-continuum/fast-syntax-highlighting'
     'mmorys/dirhistory'
-    'agkozak/zsh-z'
     'le0me55i/zsh-extract'
     'twang817/zsh-manydots-magic'
   )
+
+  if has_command awk; then
+    plugins+=('agkozak/zsh-z')
+    export ZSHZ_DATA="$XDG_CONFIG_HOME/zsh/z"
+    export ZSHZ_CASE='smart'
+  fi
 
   # workaround zsh-auto-notify detecting notify-send
   if [[ -n $SSH_CLIENT ]]; then
@@ -149,8 +155,8 @@ function {
 
 ### options & environment variables
 
+setopt SHARE_HISTORY
 setopt autocd globdots histignoredups
-
 bindkey -e
 bindkey "^[[A" history-substring-search-up
 bindkey "^[OA" history-substring-search-up
@@ -159,7 +165,6 @@ bindkey "^[OB" history-substring-search-down
 bindkey "^[[1;5D" backward-word
 bindkey "^[[1;5C" forward-word
 
-autoload -Uz compinit && compinit -i
 zstyle ':completion:*' menu yes select
 zstyle ':completion:*' rehash true
 zstyle ':completion:*:functions' ignored-patterns '_*'
@@ -170,9 +175,10 @@ add_path "$HOME/.local/bin" \
 
 export EDITOR="$(first_available nvim vim nano)"
 export VISUAL="$EDITOR"
-export HISTFILE=~/.zhistory
+export HISTFILE="$ZCONFIGDIR/history"
 export HISTSIZE=50000
 export SAVEHIST=50000
+export COMPDUMPFILE="$ZCONFIGDIR/compdump"
 export COLORTERM=truecolor
 export WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 export DISABLE_UNTRACKED_FILES_DIRTY="true"
@@ -181,6 +187,7 @@ if [[ $TERM == linux ]]; then
 fi
 
 zmodload zsh/zutil
+autoload -Uz compinit && compinit -d "$COMPDUMPFILE"
 
 ### aliases
 
