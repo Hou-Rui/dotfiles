@@ -4,6 +4,8 @@ set -eu
 CURDIR="$(dirname "$(readlink -f "$0")")"
 REMOTE=
 
+cd "$CURDIR"
+
 home_ins() {
   for f in "$@"; do
     echo "Installing $f"

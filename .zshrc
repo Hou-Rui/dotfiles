@@ -8,7 +8,7 @@
 function add_path {
   local arg
   for arg in "$@"; do
-    [[ :"$PATH": != *:"$arg":* ]] || continue
+    [[ :$PATH: != *:$arg:* ]] || continue
     export PATH="$arg:$PATH"
   done
 }
@@ -102,7 +102,7 @@ function {
   done
 }
 
-if [[ "$TERM" == linux ]]; then
+if [[ $TERM == linux ]]; then
   export TERM=linux-16color
 fi
 
