@@ -75,7 +75,6 @@ function plugin-load {
     plugdir="$ZPLUGINDIR/${repo:t}"
     initfile="$plugdir/${repo:t}.plugin.zsh"
     if [[ ! -d $plugdir ]]; then
-      echo "Cloning $repo..."
       git clone "$clone_args[@]" "https://github.com/$repo" "$plugdir"
       if [[ -n "$commitsha" ]]; then
         git -C "$plugdir" fetch -q origin "$commitsha"
@@ -134,6 +133,10 @@ function {
     plugins+=('agkozak/zsh-z')
     export ZSHZ_DATA="$XDG_CONFIG_HOME/zsh/z"
     export ZSHZ_CASE='smart'
+  fi
+
+  if has_command auto; then
+    plugins+=('Hou-Rui/auto-script')
   fi
 
   # workaround zsh-auto-notify detecting notify-send
