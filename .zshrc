@@ -201,6 +201,9 @@ if has_command eza; then
 else
   alias ls='ls --color'
   alias l='ls -l --color --all -F -h'
+  if has_command tree; then
+    alias tree='tree -C'
+  fi
 fi
 
 if has_command fdfind; then
