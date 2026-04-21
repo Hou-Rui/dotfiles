@@ -158,7 +158,7 @@ function {
 
 ### options & environment variables
 
-setopt SHARE_HISTORY
+setopt SHARE_HISTORY HIST_IGNORE_ALL_DUPS HIST_FIND_NO_DUPS
 setopt autocd globdots histignoredups
 bindkey -e
 bindkey "^[[A" history-substring-search-up
