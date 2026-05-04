@@ -106,6 +106,14 @@ function plugin-update {
   setopt MONITOR
 }
 
+function plugin-compile {
+  local f
+  autoload -U zrecompile
+  for f in "$ZPLUGINDIR"/**/*.zsh{,-theme}(N); do
+    zrecompile -pq "$f"
+  done
+}
+
 ### powerlevel10k instant prompt
 
 function {
@@ -153,6 +161,7 @@ function {
   fi
 
   plugin-load "$plugins[@]"
+  plugin-compile
 }
 
 
