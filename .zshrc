@@ -162,6 +162,7 @@ function {
 
   plugin-load "$plugins[@]"
   plugin-compile
+  zrecompile -pq "$HOME/.zshrc"
 }
 
 
