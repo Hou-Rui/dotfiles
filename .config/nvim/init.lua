@@ -32,7 +32,11 @@ vim.o.autoread = true
 -- persistent undo
 vim.o.undofile = true
 
-local autocmd = vim.api.nvim_create_autocmd
+-- semi-transparent UI
+vim.o.termguicolors = true
+vim.o.pumblend = 10
+vim.o.winblend = 10
+
 local function keymap(mode, lhs, rhs, options)
   if type(lhs) == 'table' then
     for _, key in pairs(lhs) do
@@ -114,17 +118,22 @@ vim.pack.add {
 
 -- ayu colors
 local ayu = require('ayu')
-local bg_overrides = {}
+local overrides = {}
 for _, hi in pairs {
-  'Normal', 'NormalFloat', 'ColorColumn', 'SignColumn',
-  'FoldColumn', 'VertSplit', 'WinSeparator'
+  'Normal', 'ColorColumn', 'SignColumn', 'FoldColumn',
+  'WinSeparator', 'PmenuBorder'
 } do
-  bg_overrides[hi] = { bg = 'None' }
+  overrides[hi] = { bg = 'None' }
+end
+for _, hi in pairs {
+  'Pmenu', 'WildMenu', 'NormalFloat'
+} do
+  overrides[hi] = { blend = vim.o.pumblend }
 end
 ayu.setup {
   mirage = true,
   terminal = true,
-  overrides = bg_overrides,
+  overrides = overrides,
 }
 ayu.colorscheme()
 
@@ -155,20 +164,44 @@ require('ibl').setup {
   indent = { char = '│' },
 }
 
--- mini.nvim
+-- icons
 require('mini.icons').setup()
+
+-- completions
 require('mini.completion').setup()
+
+-- move using Alt + direction keys
+local move_mappings = {}
+for _, d in pairs { 'left', 'right', 'down', 'up' } do
+  local key = '<A-' .. d .. '>'
+  move_mappings[d] = key
+  move_mappings['line_' .. d] = key
+end
 require('mini.move').setup {
-  mappings = {
-    left = '<A-left>', right = '<A-right>', down = '<A-down>', up = '<A-up>',
-    line_left = '<A-left>', line_right = '<A-right>', line_down = '<A-down>', line_up = '<A-up>',
-  },
+  mappings = move_mappings,
   options = {
     reindent_linewise = true,
   },
 }
+
+-- tab line
 require('mini.tabline').setup()
+
+vim.api.nvim_create_autocmd({ 'VimEnter', 'BufAdd', 'BufDelete' }, {
+  desc = 'Hide the tabline when empty',
+  group = group,
+  callback = vim.schedule_wrap(function()
+    local listed_buffers = vim.tbl_filter(function(buf)
+      return vim.bo[buf].buflisted
+    end, vim.api.nvim_list_bufs())
+    vim.o.showtabline = #listed_buffers > 1 and 2 or 0
+  end)
+})
+
+-- status line
 require('mini.statusline').setup()
+
+-- picker
 require('mini.pick').setup()
 noremap_all('<C-b>', MiniPick.builtin.files)
 noremap_all('<C-f>', MiniPick.builtin.grep_live)
