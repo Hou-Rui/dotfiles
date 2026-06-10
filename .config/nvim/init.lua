@@ -1,3 +1,19 @@
+-- plugins
+vim.pack.add {
+  "https://github.com/Shatur/neovim-ayu",
+  "https://github.com/jake-stewart/multicursor.nvim",
+  "https://github.com/tpope/vim-sleuth",
+  "https://github.com/lukas-reineke/indent-blankline.nvim",
+  "https://github.com/nvim-mini/mini.icons",
+  "https://github.com/nvim-mini/mini.completion",
+  "https://github.com/nvim-mini/mini.move",
+  "https://github.com/nvim-mini/mini.trailspace",
+  "https://github.com/nvim-mini/mini.tabline",
+  "https://github.com/nvim-mini/mini.statusline",
+  "https://github.com/nvim-mini/mini.cmdline",
+  "https://github.com/nvim-mini/mini.pick",
+}
+
 -- general settings
 vim.o.number = true
 vim.o.mouse = 'a'
@@ -5,11 +21,9 @@ vim.o.termguicolors = true
 vim.o.autoindent = true
 vim.o.cursorline = true
 vim.o.signcolumn = 'yes'
-
 vim.o.splitright = true
 vim.o.splitbelow = true
 vim.o.wildmenu = true
-vim.o.wildmode = 'longest:list,full'
 vim.o.updatetime = 100
 
 -- searching
@@ -36,6 +50,9 @@ vim.o.undofile = true
 vim.o.termguicolors = true
 vim.o.pumblend = 10
 vim.o.winblend = 10
+
+-- keymap utilities
+local autocmd = vim.api.nvim_create_autocmd
 
 local function keymap(mode, lhs, rhs, options)
   if type(lhs) == 'table' then
@@ -102,37 +119,23 @@ if not vim.g.loaded_clipboard_provider then
   vim.g.clipboard = 'osc52'
 end
 
--- plugins
-vim.pack.add {
-  "https://github.com/Shatur/neovim-ayu",
-  "https://github.com/jake-stewart/multicursor.nvim",
-  "https://github.com/tpope/vim-sleuth",
-  "https://github.com/lukas-reineke/indent-blankline.nvim",
-  "https://github.com/nvim-mini/mini.icons",
-  "https://github.com/nvim-mini/mini.completion",
-  "https://github.com/nvim-mini/mini.move",
-  "https://github.com/nvim-mini/mini.trailspace",
-  "https://github.com/nvim-mini/mini.tabline",
-  "https://github.com/nvim-mini/mini.statusline",
-  "https://github.com/nvim-mini/mini.pick",
-}
-
 -- ayu colors
 local ayu = require('ayu')
 local overrides = {}
+
 local transparent_bg = {
   'Normal', 'ColorColumn', 'SignColumn', 'FoldColumn',
   'WinSeparator', 'PmenuBorder'
 }
-local blend_bg = {
-  'Pmenu', 'WildMenu', 'NormalFloat'
-}
 for _, hi in pairs(transparent_bg) do
   overrides[hi] = { bg = 'None' }
 end
+
+local blend_bg = {'Pmenu', 'WildMenu', 'NormalFloat'}
 for _, hi in pairs(blend_bg) do
   overrides[hi] = { blend = vim.o.pumblend }
 end
+
 ayu.setup {
   mirage = true,
   terminal = true,
@@ -175,7 +178,7 @@ require('mini.completion').setup()
 
 -- move using Alt + direction keys
 local move_mappings = {}
-for _, d in pairs { 'left', 'right', 'down', 'up' } do
+for _, d in pairs {'left', 'right', 'down', 'up'} do
   local key = '<A-' .. d .. '>'
   move_mappings[d] = key
   move_mappings['line_' .. d] = key
@@ -193,7 +196,7 @@ require('mini.trailspace').setup()
 -- tab line
 require('mini.tabline').setup()
 
-vim.api.nvim_create_autocmd({ 'VimEnter', 'BufAdd', 'BufDelete' }, {
+autocmd({'VimEnter', 'BufAdd', 'BufDelete'}, {
   desc = 'Hide the tabline when empty',
   group = group,
   callback = vim.schedule_wrap(function()
@@ -206,6 +209,9 @@ vim.api.nvim_create_autocmd({ 'VimEnter', 'BufAdd', 'BufDelete' }, {
 
 -- status line
 require('mini.statusline').setup()
+
+-- command line
+require('mini.cmdline').setup()
 
 -- picker
 require('mini.pick').setup()
