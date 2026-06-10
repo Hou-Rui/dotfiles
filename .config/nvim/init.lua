@@ -111,6 +111,7 @@ vim.pack.add {
   "https://github.com/nvim-mini/mini.icons",
   "https://github.com/nvim-mini/mini.completion",
   "https://github.com/nvim-mini/mini.move",
+  "https://github.com/nvim-mini/mini.trailspace",
   "https://github.com/nvim-mini/mini.tabline",
   "https://github.com/nvim-mini/mini.statusline",
   "https://github.com/nvim-mini/mini.pick",
@@ -119,15 +120,17 @@ vim.pack.add {
 -- ayu colors
 local ayu = require('ayu')
 local overrides = {}
-for _, hi in pairs {
+local transparent_bg = {
   'Normal', 'ColorColumn', 'SignColumn', 'FoldColumn',
   'WinSeparator', 'PmenuBorder'
-} do
+}
+local blend_bg = {
+  'Pmenu', 'WildMenu', 'NormalFloat'
+}
+for _, hi in pairs(transparent_bg) do
   overrides[hi] = { bg = 'None' }
 end
-for _, hi in pairs {
-  'Pmenu', 'WildMenu', 'NormalFloat'
-} do
+for _, hi in pairs(blend_bg) do
   overrides[hi] = { blend = vim.o.pumblend }
 end
 ayu.setup {
@@ -183,6 +186,9 @@ require('mini.move').setup {
     reindent_linewise = true,
   },
 }
+
+-- trailing spaces
+require('mini.trailspace').setup()
 
 -- tab line
 require('mini.tabline').setup()
