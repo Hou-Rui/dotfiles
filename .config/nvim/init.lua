@@ -131,7 +131,11 @@ noremap('i', '<C-e>', '<esc>$a')
 -- save
 noremap_all('<C-s>', '<cmd>wa<cr>')
 -- quit
-noremap_all('<C-q>', '<cmd>qa<cr>')
+noremap_all('<C-q>', '<cmd>confirm qa<cr>')
+-- close tab
+noremap_all('<C-w>', '<cmd>confirm bd<cr>')
+-- new tab
+noremap_all('<C-n>', '<cmd>enew<cr>')
 -- undo / redo
 noremap_all('<C-z>', '<cmd>undo<cr>')
 noremap_all({'<C-y>', '<C-S-z>'}, '<cmd>redo<cr>')
@@ -243,7 +247,9 @@ lazy.setup(
       'tpope/vim-commentary',
       config = function()
         noremap({'n', 'v'}, '<C-_>', ':Commentary<cr>')
+        noremap({'n', 'v'}, '<C-/>', ':Commentary<cr>')
         noremap('i', '<C-_>', '<cmd>Commentary<cr>')
+        noremap('i', '<C-/>', '<cmd>Commentary<cr>')
       end
     },
     -- sudo handling
@@ -296,7 +302,7 @@ lazy.setup(
     -- tree sitter
     {
       'nvim-treesitter/nvim-treesitter',
-      branch = 'main',
+      branch = 'master',
       lazy = false,
       build = ':TSUpdate',
       cond = is_not_large_file,
@@ -373,3 +379,32 @@ lazy.setup(
   }
 )
 
+if vim.env.TERM_PROGRAM == "vscode" then
+  -- Adjust to match your keyboard layout if necessary
+  local shifted_digits = {
+    ["<S-1>"] = '!',
+    ["<S-2>"] = '@',
+    ["<S-3>"] = '#',
+    ["<S-4>"] = '$',
+    ["<S-5>"] = '%',
+    ["<S-6>"] = '^',
+    ["<S-7>"] = '&',
+    ["<S-8>"] = '*',
+    ["<S-9>"] = '(',
+    ["<S-0>"] = ')',
+  }
+
+  for lhs, rhs in pairs(shifted_digits) do
+    vim.keymap.set({ "n", "x", "i" }, lhs, rhs, {
+      noremap = true,
+      silent = true,
+    })
+
+    vim.keymap.set("c", lhs, function()
+      return rhs
+    end, {
+      expr = true,
+      noremap = true,
+    })
+  end
+end
