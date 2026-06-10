@@ -27,6 +27,7 @@ vim.o.wildmenu = true
 vim.o.updatetime = 100
 
 -- searching
+vim.g.loaded_gtags_cscope = 1
 vim.o.showmatch = true
 vim.o.hlsearch = true
 vim.o.incsearch = true
