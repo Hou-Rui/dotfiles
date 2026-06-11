@@ -65,6 +65,13 @@ local function keymap(mode, lhs, rhs, options)
   vim.keymap.set(mode, lhs, rhs, options)
 end
 
+local function remap(mode, lhs, rhs, options)
+  local opts = options or {}
+  opts['remap'] = true
+  opts['nowait'] = true
+  keymap(mode, lhs, rhs, opts)
+end
+
 local function noremap(mode, lhs, rhs, options)
   local opts = options or {}
   opts['remap'] = false
@@ -112,9 +119,9 @@ noremap('v', '<S-Tab>', '<gv')
 noremap('n', '<S-Tab>', '<<')
 noremap('i', '<S-Tab>', '<C-d>')
 -- comment
-keymap('n', '<C-_>', 'gcc', { remap = true })
-keymap('i', '<C-_>', '<esc>gcci', { remap = true })
-keymap('v', '<C-_>', 'gc', { remap = true })
+remap('n', {'<C-_>', '<C-/>'}, 'gcc')
+remap('i', {'<C-_>', '<C-/>'}, '<esc>gcci')
+remap('v', {'<C-_>', '<C-/>'}, 'gc')
 
 if not vim.g.loaded_clipboard_provider then
   vim.g.clipboard = 'osc52'
