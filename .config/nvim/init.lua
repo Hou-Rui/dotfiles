@@ -1,9 +1,9 @@
 -- plugins
 vim.pack.add {
-  "https://github.com/Shatur/neovim-ayu",
   "https://github.com/jake-stewart/multicursor.nvim",
   "https://github.com/tpope/vim-sleuth",
   "https://github.com/lukas-reineke/indent-blankline.nvim",
+  "https://github.com/nvim-mini/mini.base16",
   "https://github.com/nvim-mini/mini.icons",
   "https://github.com/nvim-mini/mini.completion",
   "https://github.com/nvim-mini/mini.move",
@@ -128,28 +128,14 @@ if not vim.g.loaded_clipboard_provider then
 end
 
 -- ayu colors
-local ayu = require('ayu')
-local overrides = {}
-
-local transparent_bg = {
-  'Normal', 'ColorColumn', 'SignColumn', 'FoldColumn',
-  'WinSeparator', 'PmenuBorder'
+require('mini.base16').setup {
+  palette = {
+    base00 = '#1f2228', base01 = '#262830', base02 = '#353741', base03 = '#666a73',
+    base04 = '#707a8c', base05 = '#e6ebef', base06 = '#707a8c', base07 = '#666a73',
+    base08 = '#f28779', base09 = '#ffad66', base0A = '#ffd173', base0B = '#d5ff80',
+    base0C = '#95e6cb', base0D = '#73d0ff', base0E = '#d4bfff', base0F = '#f27983'
+  }
 }
-for _, hi in pairs(transparent_bg) do
-  overrides[hi] = { bg = 'None' }
-end
-
-local blend_bg = {'Pmenu', 'WildMenu', 'NormalFloat'}
-for _, hi in pairs(blend_bg) do
-  overrides[hi] = { blend = vim.o.pumblend }
-end
-
-ayu.setup {
-  mirage = true,
-  terminal = true,
-  overrides = overrides,
-}
-ayu.colorscheme()
 
 -- multi-cursors
 local mc = require('multicursor-nvim')
