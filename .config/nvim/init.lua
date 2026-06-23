@@ -3,6 +3,7 @@ vim.pack.add {
   "https://github.com/jake-stewart/multicursor.nvim",
   "https://github.com/tpope/vim-sleuth",
   "https://github.com/lukas-reineke/indent-blankline.nvim",
+  "https://github.com/romus204/tree-sitter-manager.nvim",
   "https://github.com/nvim-mini/mini.base16",
   "https://github.com/nvim-mini/mini.icons",
   "https://github.com/nvim-mini/mini.completion",
@@ -212,3 +213,7 @@ require('mini.pick').setup()
 noremap_all('<C-b>', MiniPick.builtin.files)
 noremap_all('<C-f>', MiniPick.builtin.grep_live)
 
+-- Tree-sitter
+require("tree-sitter-manager").setup({
+  auto_install = true,
+})
