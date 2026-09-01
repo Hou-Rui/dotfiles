@@ -4,6 +4,7 @@ vim.pack.add {
   "https://github.com/tpope/vim-sleuth",
   "https://github.com/lukas-reineke/indent-blankline.nvim",
   "https://github.com/romus204/tree-sitter-manager.nvim",
+  "https://github.com/lambdalisue/vim-suda",
   "https://github.com/nvim-mini/mini.base16",
   "https://github.com/nvim-mini/mini.icons",
   "https://github.com/nvim-mini/mini.completion",
@@ -164,6 +165,9 @@ end)
 require('ibl').setup {
   indent = { char = '│' },
 }
+
+-- sudo edit
+vim.g.suda_smart_edit = 1
 
 -- icons
 require('mini.icons').setup()
