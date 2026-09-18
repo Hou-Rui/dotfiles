@@ -131,13 +131,19 @@ end
 
 -- ayu colors
 require('mini.base16').setup {
-  palette = {
+  palette = vim.o.background == 'dark' and {
     base00 = '#1f2228', base01 = '#262830', base02 = '#353741', base03 = '#666a73',
     base04 = '#707a8c', base05 = '#e6ebef', base06 = '#707a8c', base07 = '#666a73',
     base08 = '#f28779', base09 = '#ffad66', base0A = '#ffd173', base0B = '#d5ff80',
     base0C = '#95e6cb', base0D = '#73d0ff', base0E = '#d4bfff', base0F = '#f27983'
+  } or {
+    base00 = '#f8f9fa', base01 = '#edeff1', base02 = '#d2d4d8', base03 = '#a0a6ac',
+    base04 = '#8A9199', base05 = '#5c6166', base06 = '#4e5257', base07 = '#404447',
+    base08 = '#f07171', base09 = '#d67835', base0A = '#ce923e', base0B = '#5ca23e',
+    base0C = '#42a785', base0D = '#318bc7', base0E = '#946fba', base0F = '#cca470'
   }
 }
+vim.api.nvim_set_hl(0, 'Normal', { bg = 'NONE' })
 
 -- multi-cursors
 local mc = require('multicursor-nvim')
