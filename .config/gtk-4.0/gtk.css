@@ -113,6 +113,7 @@ popover contents, popover arrow {
 }
 
 tooltip {
+  color: @tooltip_text_breeze;
   background-color: @tooltip_background_breeze;
   border-color: @tooltip_border_breeze;
 }
